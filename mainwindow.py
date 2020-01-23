@@ -40,6 +40,7 @@ class MainWindow(QMainWindow):
         self._measureWidget.secondaryChanged.connect(self._instrumentController.on_secondary_changed)
 
         self._measureWidget.measureComplete.connect(self._measureModel.update)
+        self._measureWidget.measureComplete.connect(self.on_measureComplete)
 
         # self._ui.tableMeasure.setModel(self._measureModel)
 
@@ -62,3 +63,7 @@ class MainWindow(QMainWindow):
     def on_instrumens_connected(self):
         print(f'connected {self._instrumentController}')
 
+    @pyqtSlot()
+    def on_measureComplete(self):
+        print('meas complete')
+        # TODO plot data

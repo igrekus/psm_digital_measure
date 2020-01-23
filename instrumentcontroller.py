@@ -103,11 +103,8 @@ class InstrumentController(QObject):
     def measure(self, params):
         print(f'call measure with {params}')
         device, secondary = params
-        raw_data = self._measure(device, secondary)
-        self.hasResult = bool(raw_data)
-
-        if self.hasResult:
-            self._export_to_xlsx(raw_data)
+        self.result.raw_data = self._measure(device, secondary)
+        self.hasResult = bool(self.result.raw_data)
 
     def _measure(self, device, secondary):
         param = self.deviceParams[device]
@@ -121,7 +118,7 @@ class InstrumentController(QObject):
 
         self._measure_s_params()
 
-        self.result = MeasureResult(self._freqs, self._mag_s11s, self._mag_s22s, self._mag_s21s, self._phs_s21s, self._phase_values)
+        return self._freqs, self._mag_s11s, self._mag_s22s, self._mag_s21s, self._phs_s21s, self._phase_values
 
     def _clear(self):
         self._freqs = list()
