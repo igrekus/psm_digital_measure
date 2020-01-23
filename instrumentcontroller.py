@@ -1,6 +1,6 @@
-from os.path import isfile
-from collections import defaultdict
+import time
 
+from os.path import isfile
 from PyQt5.QtCore import QObject, pyqtSlot
 
 from arduino.programmerfactory import ProgrammerFactory
