@@ -62,10 +62,6 @@ class InstrumentController(QObject):
         self.present = False
         self.hasResult = False
 
-        # self.result = MeasureResult() if not mock_enabled \
-        #     else MeasureResultMock(self.deviceParams, self.secondaryParams)
-        self.result = MeasureResultMock(self.deviceParams, self.secondaryParams)
-
         self._freqs = list()
         self._mag_s11s = list()
         self._mag_s22s = list()
