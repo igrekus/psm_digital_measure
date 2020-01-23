@@ -6,6 +6,7 @@ from instrumentcontroller import InstrumentController
 from connectionwidget import ConnectionWidget
 from measuremodel import MeasureModel
 from measurewidget import MeasureWidgetWithSecondaryParameters
+from primaryplotwidget import PrimaryPlotWidget
 
 
 class MainWindow(QMainWindow):
@@ -26,10 +27,12 @@ class MainWindow(QMainWindow):
         self._connectionWidget = ConnectionWidget(parent=self, controller=self._instrumentController)
         self._measureWidget = MeasureWidgetWithSecondaryParameters(parent=self, controller=self._instrumentController)
         self._measureModel = MeasureModel(parent=self, controller=self._instrumentController)
+        self._plotWidget = PrimaryPlotWidget(parent=self, result=self._instrumentController.result)
 
         # init UI
         self._ui.layInstrs.insertWidget(0, self._connectionWidget)
         self._ui.layInstrs.insertWidget(1, self._measureWidget)
+        self._ui.tabWidget.insertTab(0, self._plotWidget, 'Автоматическое измерение')
 
         self._init()
 
@@ -66,4 +69,4 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def on_measureComplete(self):
         print('meas complete')
-        # TODO plot data
+        self._plotWidget.plot()

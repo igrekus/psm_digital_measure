@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1132</width>
-    <height>507</height>
+    <height>835</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,18 +38,8 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>-1</number>
       </property>
-      <widget class="QWidget" name="tabAuto">
-       <attribute name="title">
-        <string>Автоматическое измерение</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="tabLayout">
-        <item>
-         <widget class="QWidget" name="plotWidget" native="true"/>
-        </item>
-       </layout>
-      </widget>
      </widget>
     </item>
    </layout>
