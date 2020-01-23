@@ -5,32 +5,9 @@ from PyQt5.QtCore import QObject, pyqtSlot
 
 from arduino.programmerfactory import ProgrammerFactory
 from instr.instrumentfactory import NetworkAnalyzerFactory
+from measureresult import MeasureResult
 
 is_mock = True
-class MeasureResult:
-    def __init__(self):
-        self.headers = list()
-    def init(self):
-        raise NotImplementedError()
-    def process_raw_data(self, *args, **kwargs):
-        raise NotImplementedError()
-
-
-class MeasureResultMock(MeasureResult):
-    def __init__(self, device, secondary):
-        super().__init__()
-        self.devices: list = list(device.keys())
-        self.secondary: dict = secondary
-
-        self.headersCache = dict()
-        self._generators = defaultdict(list)
-        self.data = list()
-
-    def init(self):
-        self.headersCache.clear()
-        self._generators.clear()
-        self.data.clear()
-        return True
 
 
 class InstrumentController(QObject):
