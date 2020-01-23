@@ -62,6 +62,8 @@ class InstrumentController(QObject):
         self.present = False
         self.hasResult = False
 
+        self.result = MeasureResult()
+
         self._freqs = list()
         self._mag_s11s = list()
         self._mag_s22s = list()
@@ -119,8 +121,7 @@ class InstrumentController(QObject):
 
         self._measure_s_params()
 
-        result = MeasureResult(self._freqs, self._mag_s11s, self._mag_s22s, self._mag_s21s, self._phs_s21s, self._phase_values)
-        return result
+        self.result = MeasureResult(self._freqs, self._mag_s11s, self._mag_s22s, self._mag_s21s, self._phs_s21s, self._phase_values)
 
     def _clear(self):
         self._freqs = list()
