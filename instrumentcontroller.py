@@ -6,7 +6,7 @@ from PyQt5.QtCore import QObject, pyqtSlot
 from arduino.programmerfactory import ProgrammerFactory
 from instr.instrumentfactory import NetworkAnalyzerFactory
 
-
+is_mock = True
 class MeasureResult:
     def __init__(self):
         self.headers = list()
