@@ -60,7 +60,12 @@ class InstrumentController(QObject):
                 raw = ''.join(f.readlines())
                 self.deviceParams = ast.literal_eval(raw)
 
-        self.secondaryParams = {'F': 1.0, 'dF': 0.1, 'Pmin': 10.0, 'Pmax': 20.0, 'dP1': 1.0, 'dP2': 1.0}
+        self.secondaryParams = {
+            'Pin': -10,
+            'F1': 4,
+            'F2': 8,
+            'State': 0
+        }
 
         self.span = 0.1
 
@@ -116,31 +121,10 @@ class InstrumentController(QObject):
         secondary = self.secondaryParams
         print(f'launch measure with {param} {secondary}')
 
-        self._instruments['Генератор 1'].set_modulation(state='OFF')
-        self._instruments['Генератор 2'].set_modulation(state='OFF')
-        self._instruments['Анализатор'].set_autocalibrate(state='OFF')
-        self._instruments['Анализатор'].set_span(value=self.span, unit='MHz')
-        self._instruments['Анализатор'].set_marker_mode(marker=1, mode='POS')
+        self._instruments['Анализатор'].send('lol')
+        self._instruments['Программатор'].set_lpf_code(0)
 
-        freqs = [1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]
-        pows = [param['P1'] + 0.5 * i for i in range(int((secondary['Pmax'] - secondary['Pmin']) / 0.5))]
-        dF = secondary['dF']
-
-        result = list()
-        for freq in freqs:
-            self._instruments['Генератор 1'].set_freq(value=freq, unit='GHz')
-            self._instruments['Генератор 2'].set_freq(value=freq, unit='GHz')
-            for pow in pows:
-                self._instruments['Генератор 1'].set_pow(value=pow + secondary['dP1'], unit='dBm')
-                self._instruments['Генератор 2'].set_pow(value=pow + secondary['dP2'], unit='dBm')
-                temp = list()
-                analyzer_freqs = [freq, freq - dF, freq + dF, freq + 2 * dF]
-                for measure_freq in analyzer_freqs:
-                    self._instruments['Анализатор'].set_measure_center_freq(value=measure_freq, unit='GHz')
-                    temp.append(self._instruments['Анализатор'].read_pow(marker=1))
-                result.append(temp)
-
-        return result
+        return [1, 1, 1]
 
     def _export_to_xlsx(self, result):
         print('exporting result')

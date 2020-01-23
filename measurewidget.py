@@ -1,6 +1,6 @@
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSlot, pyqtSignal, QRunnable, QThreadPool
-from PyQt5.QtWidgets import QWidget, QComboBox, QLabel, QMessageBox, QDoubleSpinBox
+from PyQt5.QtWidgets import QWidget, QComboBox, QLabel, QMessageBox, QDoubleSpinBox, QSpinBox
 
 from deviceselectwidget import DeviceSelectWidget
 
@@ -127,56 +127,46 @@ class MeasureWidgetWithSecondaryParameters(MeasureWidget):
 
         self._params = 0
 
-        # self._spinFreq = QDoubleSpinBox(parent=self)
-        # self._spinFreq.setMinimum(0)
-        # self._spinFreq.setMaximum(20_000)
-        # self._spinFreq.setSingleStep(1)
-        # self._devices._layout.addRow('F=', self._spinFreq)   # 0 .. 20k
+        self._spinPowIn = QDoubleSpinBox(parent=self)
+        self._spinPowIn.setMinimum(-50)
+        self._spinPowIn.setMaximum(50)
+        self._spinPowIn.setSingleStep(1)
+        self._spinPowIn.setValue(-10)
+        self._spinPowIn.setSuffix(' дБм')
+        self._devices._layout.addRow('Pвх=', self._spinPowIn)
 
-        self._spinDeltaFreq = QDoubleSpinBox(parent=self)
-        self._spinDeltaFreq.setMinimum(0)
-        self._spinDeltaFreq.setMaximum(100)
-        self._spinDeltaFreq.setSingleStep(1)
-        self._spinDeltaFreq.setValue(0.1)
-        self._devices._layout.addRow('ΔF=', self._spinDeltaFreq)   # 0..100, 1
+        self._spinFreqStart = QDoubleSpinBox(parent=self)
+        self._spinFreqStart.setMinimum(0)
+        self._spinFreqStart.setMaximum(20)
+        self._spinFreqStart.setSingleStep(1)
+        self._spinFreqStart.setValue(4)
+        self._spinFreqStart.setSuffix(' ГГц')
+        self._devices._layout.addRow('F1=', self._spinFreqStart)
 
-        self._spinPmin = QDoubleSpinBox(parent=self)
-        self._spinPmin.setMinimum(-30)
-        self._spinPmin.setMaximum(20)
-        self._spinPmin.setSingleStep(0.1)
-        self._spinPmin.setValue(10.0)
-        self._devices._layout.addRow('Pmin=', self._spinPmin)   # -30 ... 20
+        self._spinFreqEnd = QDoubleSpinBox(parent=self)
+        self._spinFreqEnd.setMinimum(0)
+        self._spinFreqEnd.setMaximum(20)
+        self._spinFreqEnd.setSingleStep(1)
+        self._spinFreqEnd.setValue(8)
+        self._spinFreqEnd.setSuffix(' ГГц')
+        self._devices._layout.addRow('А2=', self._spinFreqEnd)
 
-        self._spinPmax = QDoubleSpinBox(parent=self)
-        self._spinPmax.setMinimum(-30)
-        self._spinPmax.setMaximum(20)
-        self._spinPmax.setSingleStep(0.1)
-        self._spinPmax.setValue(20.0)
-        self._devices._layout.addRow('Pmax=', self._spinPmax)   # -30 .. 20, 0.1
-
-        self._spinDeltaP1 = QDoubleSpinBox(parent=self)
-        self._spinDeltaP1.setMinimum(-5)
-        self._spinDeltaP1.setMaximum(10)
-        self._spinDeltaP1.setSingleStep(0.01)
-        self._spinDeltaP1.setValue(1.0)
-        self._devices._layout.addRow('ΔP1=', self._spinDeltaP1)   # -5 .. 10
-
-        self._spinDeltaP2 = QDoubleSpinBox(parent=self)
-        self._spinDeltaP2.setMinimum(-4)
-        self._spinDeltaP2.setMaximum(10)
-        self._spinDeltaP2.setSingleStep(0.01)
-        self._spinDeltaP2.setValue(1.0)
-        self._devices._layout.addRow('ΔP2=', self._spinDeltaP2)   # -5 .. 10, step .01
+        self._spinState = QSpinBox(parent=self)
+        self._spinState.setMinimum(0)
+        self._spinState.setMaximum(63)
+        self._spinState.setSingleStep(1)
+        self._spinState.setValue(0)
+        self._spinState.setSuffix(' ГГц')
+        self._devices._layout.addRow('Состояние=', self._spinState)
 
         self._connectSignals()
 
     def _connectSignals(self):
         # self._spinFreq.valueChanged.connect(self.on_params_changed)
-        self._spinDeltaFreq.valueChanged.connect(self.on_params_changed)
-        self._spinPmin.valueChanged.connect(self.on_params_changed)
-        self._spinPmax.valueChanged.connect(self.on_params_changed)
-        self._spinDeltaP1.valueChanged.connect(self.on_params_changed)
-        self._spinDeltaP2.valueChanged.connect(self.on_params_changed)
+        self._spinPowIn.valueChanged.connect(self.on_params_changed)
+        self._spinFreqStart.valueChanged.connect(self.on_params_changed)
+        self._spinFreqEnd.valueChanged.connect(self.on_params_changed)
+        self._spinState.valueChanged.connect(self.on_params_changed)
 
     def _modePreConnect(self):
         super()._modePreConnect()
@@ -214,11 +204,9 @@ class MeasureWidgetWithSecondaryParameters(MeasureWidget):
 
     def on_params_changed(self, value):
         params = {
-            # 'F': self._spinFreq.value(),
-            'dF': self._spinDeltaFreq.value(),
-            'Pmin': self._spinPmin.value(),
-            'Pmax': self._spinPmax.value(),
-            'dP1': self._spinDeltaP1.value(),
-            'dP2': self._spinDeltaP2.value()
+            'Pin': self._spinPowIn.value(),
+            'F1': self._spinFreqStart.value(),
+            'F2': self._spinFreqEnd.value(),
+            'State': self._spinState.value()
         }
         self.secondaryChanged.emit(params)
