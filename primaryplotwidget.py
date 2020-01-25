@@ -13,7 +13,7 @@ class PrimaryPlotWidget(QWidget):
             '11': {
                 'title': 'Вносимые потери',
                 'xlabel': 'Частота, ГГц',
-                'xlim': [0.01, 6],
+                'xlim': [1, 1.6],
                 'ylabel': 'αпот., дБ',
                 'ylim': []
             },
@@ -90,11 +90,10 @@ class PrimaryPlotWidget(QWidget):
         self.clear()
         self._init(dev_id)
         print('plotting primary stats')
-        # freqs, s21s = self._result.loss_dataset
-        # for freq, s21 in zip(itertools.cycle(freqs), s21s):
-        #     self._plot11.plot(freq, s21)
-
-        self._plot11.plot([1, 2, 3], [1, 2, 3])
+        freqs, s21s = self._result.loss_dataset
+        freqs = [f / 1_000_000_000 for f in freqs]
+        for s21 in s21s:
+            self._plot11.plot(freqs, s21)
 
         # for xs, ys in zip(self._domain.errorPerCodeXs, self._domain.errorPerCodeYs):
         #     self._plot12.plot(xs, ys)

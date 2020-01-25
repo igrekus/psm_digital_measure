@@ -216,3 +216,7 @@ class MeasureResult:
     @property
     def datasets(self):
         return self._data_set
+
+    @property
+    def loss_dataset(self):
+        return self._freqs, self._phs_s21s
