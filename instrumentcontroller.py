@@ -211,6 +211,9 @@ class InstrumentController(QObject):
         # xslx_result(result)
         # xlsx_result.save('out.xlsx')
 
+    def pow_sweep(self):
+        print('pow sweep')
+
     @pyqtSlot(dict)
     def on_secondary_changed(self, params):
         self.secondaryParams = params
