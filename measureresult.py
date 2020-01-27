@@ -218,5 +218,17 @@ class MeasureResult:
         return self._data_set
 
     @property
-    def loss_dataset(self):
-        return self._freqs, self._phs_s21s
+    def swr_out(self):
+        return self._gamma_output
+
+    @property
+    def swr_in(self):
+        return self._gamma_input
+
+    @property
+    def phase(self):
+        return self._phases
+
+    @property
+    def phase_err(self):
+        return self._phase_errs

@@ -11,31 +11,31 @@ class PrimaryPlotWidget(QWidget):
     params = {
         0: {
             '11': {
-                'title': 'Вносимые потери',
-                'xlabel': 'Частота, ГГц',
+                'title': 'SWR in',
+                'xlabel': 'F, GHz',
                 'xlim': [1, 1.6],
-                'ylabel': 'αпот., дБ',
+                'ylabel': 'loss, dB',
                 'ylim': []
             },
             '12': {
-                'title': 'Ошибка для состояния',
-                'xlabel': 'Частота, ГГц',
-                'xlim': [0.01, 6],
-                'ylabel': 'Аош',
+                'title': 'SWR out',
+                'xlabel': 'F, GHz',
+                'xlim': [1, 1.6],
+                'ylabel': 'loss, dB',
                 'ylim': []
             },
             '21': {
-                'title': f'Входные обратные потери',
-                'xlabel': 'Частота, ГГц',
-                'xlim': [0.01, 6],
-                'ylabel': 'S11, дБ',
+                'title': f'Phase',
+                'xlabel': 'F, GHz',
+                'xlim': [1, 1.6],
+                'ylabel': 'phase, deg',
                 'ylim': []
             },
             '22': {
-                'title': 'Выходные обратные потери',
-                'xlabel': 'Частота, ГГц',
-                'xlim': [0.01, 6],
-                'ylabel': 'S22, дБ',
+                'title': 'Phase error',
+                'xlabel': 'F, GHz',
+                'xlim': [1, 1.6],
+                'ylabel': 'Phase error, deg',
                 'ylim': []
             }
         },
@@ -89,11 +89,22 @@ class PrimaryPlotWidget(QWidget):
     def plot(self, dev_id=0):
         self.clear()
         self._init(dev_id)
+        self._result.process()
+
         print('plotting primary stats')
-        freqs, s21s = self._result.loss_dataset
-        freqs = [f / 1_000_000_000 for f in freqs]
-        for s21 in s21s:
-            self._plot11.plot(freqs, s21)
+
+        swr_out = self._result.swr_out
+        swr_in = self._result.swr_in
+        phase = self._result.phase
+        phase_err = self._result.phase_err
+
+        freqs = [f / 1_000_000_000 for f in self._result.freqs]
+
+        for sw_in, sw_out, ph, ph_e in zip(swr_in, swr_out, phase, phase_err):
+            self._plot11.plot(freqs, sw_in)
+            self._plot12.plot(freqs, sw_out)
+            self._plot21.plot(freqs, ph)
+            self._plot22.plot(freqs, ph_e)
 
         # for xs, ys in zip(self._domain.errorPerCodeXs, self._domain.errorPerCodeYs):
         #     self._plot12.plot(xs, ys)
