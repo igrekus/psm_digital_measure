@@ -213,6 +213,7 @@ class InstrumentController(QObject):
 
     def pow_sweep(self):
         print('pow sweep')
+        return [4, 5, 6], [4, 5, 6]
 
     @pyqtSlot(dict)
     def on_secondary_changed(self, params):
