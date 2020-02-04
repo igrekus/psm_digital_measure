@@ -139,7 +139,7 @@ class MeasureWidgetWithSecondaryParameters(MeasureWidget):
         self._spinFreqStart.setMinimum(0)
         self._spinFreqStart.setMaximum(20)
         self._spinFreqStart.setSingleStep(1)
-        self._spinFreqStart.setValue(4)
+        self._spinFreqStart.setValue(2)
         self._spinFreqStart.setSuffix(' ГГц')
         self._devices._layout.addRow('F1=', self._spinFreqStart)
 
@@ -147,7 +147,7 @@ class MeasureWidgetWithSecondaryParameters(MeasureWidget):
         self._spinFreqEnd.setMinimum(0)
         self._spinFreqEnd.setMaximum(20)
         self._spinFreqEnd.setSingleStep(1)
-        self._spinFreqEnd.setValue(8)
+        self._spinFreqEnd.setValue(4)
         self._spinFreqEnd.setSuffix(' ГГц')
         self._devices._layout.addRow('А2=', self._spinFreqEnd)
 
