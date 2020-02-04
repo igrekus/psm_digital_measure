@@ -149,7 +149,7 @@ class MeasureWidgetWithSecondaryParameters(MeasureWidget):
         self._spinFreqEnd.setSingleStep(1)
         self._spinFreqEnd.setValue(4)
         self._spinFreqEnd.setSuffix(' ГГц')
-        self._devices._layout.addRow('А2=', self._spinFreqEnd)
+        self._devices._layout.addRow('F2=', self._spinFreqEnd)
 
         self._spinState = QSpinBox(parent=self)
         self._spinState.setMinimum(0)
