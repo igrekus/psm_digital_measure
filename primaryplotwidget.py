@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QWidget
 
 class PlotWidget(QChartView):
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, xrange=(0, 10), yrange=(0, 10), ticks=5):
         super().__init__(parent=parent)
 
         self.setRenderHint(QPainter.Antialiasing)
@@ -16,25 +16,25 @@ class PlotWidget(QChartView):
         self._axis_x = QValueAxis()
         self._axis_y = QValueAxis()
 
-        self.series = QLineSeries(self)
-
-        self._chart.addSeries(self.series)
         self._chart.addAxis(self._axis_x, Qt.AlignBottom)
         self._chart.addAxis(self._axis_y, Qt.AlignLeft)
 
-        self.series.attachAxis(self._axis_x)
-        self.series.attachAxis(self._axis_y)
+        self._axis_x.setTickCount(ticks)
+        self._axis_x.setRange(*xrange)
 
-        self._axis_x.setTickCount(5)
-        self._axis_x.setRange(0, 10)
-
-        self._axis_y.setTickCount(5)
-        self._axis_y.setRange(0, 10)
+        self._axis_y.setTickCount(ticks)
+        self._axis_y.setRange(*yrange)
 
         self._chart.legend().hide()
 
-    def plot(self, xs, ys):
-        self.series.replace([QPointF(x, y) for x, y in zip(xs, ys)])
+    def plot(self, xs_arr, ys_arr):
+        self._chart.removeAllSeries()
+        for xs, ys in zip(xs_arr, ys_arr):
+            series = QLineSeries(self)
+            series.attachAxis(self._axis_x)
+            series.attachAxis(self._axis_y)
+            series.replace([QPointF(x, y) for x, y in zip(xs, ys)])
+            self._chart.addSeries(series)
 
     @property
     def axes_titles(self):
