@@ -1,3 +1,5 @@
+import itertools
+
 from PyQt5 import uic
 from PyQt5.QtChart import QChartView, QLineSeries, QValueAxis
 from PyQt5.QtCore import pyqtSlot, pyqtSignal, QPointF, Qt
@@ -70,35 +72,43 @@ class PrimaryPlotWidget(QWidget):
         self._ui = uic.loadUi('primaryplotwidget.ui', self)
         self._result = result
 
-        self._plotFreq = PlotWidget(self)
-        self._ui.plotGrid.addWidget(self._plotFreq, 0, 0)
-        self._plotFreq.axes_titles = 'Ctrl voltage, V', 'Freq, MHz'
+        self._plotS21 = PlotWidget(self, (0, 8), (-10, 10), 5)
+        self._ui.plotGrid.addWidget(self._plotS21, 0, 0)
+        self._plotS21.axes_titles = 'F, ГГц', 'S21, дБм'
 
-        self._plotKvco = PlotWidget(self)
-        self._ui.plotGrid.addWidget(self._plotKvco, 0, 1)
-        self._plotKvco.axes_titles = 'Ctrl voltage, V', 'Kvco, MHz/V'
+        self._plotVswrIn = PlotWidget(self, (0, 8), (-10, 10), 5)
+        self._ui.plotGrid.addWidget(self._plotVswrIn, 0, 1)
+        self._plotVswrIn.axes_titles = 'F, ГГц', 'КСВ вх, дБм'
 
-        self._plotSupply1Current = PlotWidget(self)
-        self._ui.plotGrid.addWidget(self._plotSupply1Current, 1, 0)
-        self._plotSupply1Current.axes_titles = 'Ctrl voltage, V', 'Src current, mA'
+        self._plotVswrOut = PlotWidget(self, (0, 8), (-10, 10), 5)
+        self._ui.plotGrid.addWidget(self._plotVswrOut, 1, 0)
+        self._plotVswrOut.axes_titles = 'F, ГГц', 'КСВ вых, дБм'
 
-        self._plotPower = PlotWidget(self)
-        self._ui.plotGrid.addWidget(self._plotPower, 1, 1)
-        self._plotPower.axes_titles = 'Ctrl voltage, V', 'Pow, dBm'
+        # self._plotPower = PlotWidget(self)
+        # self._ui.plotGrid.addWidget(self._plotPower, 1, 1)
+        # self._plotPower.axes_titles = 'Ctrl voltage, V', 'Pow, dBm'
 
-        self._plotPushing = PlotWidget(self)
-        self._ui.plotGrid.addWidget(self._plotPushing, 2, 0)
-        self._plotPushing.axes_titles = 'Ctrl voltage, V', 'Pushing, Mhz/V'
+        # self._plotPushing = PlotWidget(self)
+        # self._ui.plotGrid.addWidget(self._plotPushing, 2, 0)
+        # self._plotPushing.axes_titles = 'Ctrl voltage, V', 'Pushing, Mhz/V'
 
         self._ready = False
 
-    def plotResult(self, result):
-        self._plotFreq.plot(xs=result.tune_voltage, ys=result.frequency)
-        self._plotKvco.plot(xs=result.tune_voltage, ys=result.kvco)
-        self._plotSupply1Current.plot(xs=result.tune_voltage, ys=result.supply_current)
-        self._plotPower.plot(xs=result.tune_voltage, ys=result.power)
-        self._plotPushing.plot(xs=result.tune_voltage, ys=result.pushing)
-        self._plotPhaseNoise.plot(xs=result.tune_voltage, ys=result.noise)
+    def plot(self):
+        print('plotting', self._result)
+
+        s21s = self._result.s21
+        freqs = self._result.freqs
+        vswr_in = self._result.vswr_in
+        vswr_out = self._result.vswr_out
+        n = len(s21s)
+
+        self._plotS21.plot(xs_arr=itertools.repeat(freqs, n), ys_arr=s21s)
+        self._plotVswrIn.plot(xs_arr=itertools.repeat(freqs, n), ys_arr=vswr_in)
+        self._plotVswrOut.plot(xs_arr=itertools.repeat(freqs, n), ys_arr=vswr_out)
+        # self._plotPower.plot(xs=result.tune_voltage, ys=result.power)
+        # self._plotPushing.plot(xs=result.tune_voltage, ys=result.pushing)
+        # self._plotPhaseNoise.plot(xs=result.tune_voltage, ys=result.noise)
 
     # event handlers
     @pyqtSlot()
