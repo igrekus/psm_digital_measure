@@ -52,6 +52,8 @@ class MainWindow(QMainWindow):
 
         self.refreshView()
 
+        self._measureWidget.on_params_changed(1)
+
     # UI utility methods
     def refreshView(self):
         self.resizeTable()
