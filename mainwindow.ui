@@ -14,7 +14,7 @@
    <string>Измерение параметров ШПУ</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,7">
+   <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,10">
     <item>
      <layout class="QVBoxLayout" name="layInstrs">
       <property name="spacing">
