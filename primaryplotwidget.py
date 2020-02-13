@@ -92,11 +92,11 @@ class PrimaryPlotWidget(QWidget):
 
         self._plotS21PhaseErr = PlotWidget(self)
         self._ui.plotGrid.addWidget(self._plotS21PhaseErr, 1, 1)
-        self._plotS21PhaseErr.axes_titles = 'F, ГГц', 'Phase, deg'
+        self._plotS21PhaseErr.axes_titles = 'F, ГГц', 'φ ош, град'
 
-        # self._plotPushing = PlotWidget(self)
-        # self._ui.plotGrid.addWidget(self._plotPushing, 2, 0)
-        # self._plotPushing.axes_titles = 'Ctrl voltage, V', 'Pushing, Mhz/V'
+        self._plotS21PhaseRmse = PlotWidget(self, (0, 8), (-10, 10), 5)
+        self._ui.plotGrid.addWidget(self._plotS21PhaseRmse, 0, 2)
+        self._plotS21PhaseRmse.axes_titles = 'F, ГГц', 'φ ско'
 
         self._ready = False
 
@@ -113,6 +113,7 @@ class PrimaryPlotWidget(QWidget):
         vswr_in = self._result.vswr_in
         vswr_out = self._result.vswr_out
         phase_errs = self._result.phase_err
+        phase_rmse = self._result.phase_rmse
         n = len(s21s)
 
         self._plotS21.setYRange(min(min(s) for s in s21s), max(max(s) for s in s21s))
@@ -127,8 +128,9 @@ class PrimaryPlotWidget(QWidget):
         self._plotS21PhaseErr.setYRange(min(min(s) for s in phase_errs), max(max(s) for s in phase_errs))
         self._plotS21PhaseErr.plot(xs_arr=itertools.repeat(freqs, n - 1), ys_arr=phase_errs)
 
-        # self._plotPushing.plot(xs=result.tune_voltage, ys=result.pushing)
-        # self._plotPhaseNoise.plot(xs=result.tune_voltage, ys=result.noise)
+        self._plotS21PhaseRmse.setYRange(min(min(s) for s in phase_rmse), max(max(s) for s in phase_rmse))
+        self._plotS21PhaseRmse.plot(xs_arr=itertools.repeat(freqs, n - 1), ys_arr=phase_rmse)
+
 
     # event handlers
     @pyqtSlot()

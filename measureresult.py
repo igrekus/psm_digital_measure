@@ -1,5 +1,8 @@
 import random
+import statistics
 import numpy as np
+
+from ml_metrics import rmse
 
 
 def calc_vswr(in_mags: list):
@@ -17,11 +20,15 @@ def calc_error(array, zero):
     return [a - z + random.uniform(-0.1, 0.1) for a, z in zip(array, zero)]
 
 
+def calc_rmse(array, zero):
+    return [rmse(a, z) for a, z in zip(array, zero)]
+
+
 # + 1) vswr for dB values for s11, s22
 
-# TODO 2) s21 amps -- raw - mean db -> rms for db
 # TODO 3) calc unwrapped phase -> graph phase error Fn - F0 (raw phase - mean phase)
 # TODO 4) phraph rms phase
+# TODO 2) s21 amps -- raw - mean db -> rms for db
 
 class MeasureResult:
 
@@ -30,6 +37,8 @@ class MeasureResult:
         self._freqs = list()
         self._s21s = list()
         self._s21s_ph = list()
+        self._s21s_ph_err = list()
+        self._s21s_ph_rmse = list()
         self._s11s = list()
         self._s22s = list()
         self._states = list()
@@ -46,6 +55,8 @@ class MeasureResult:
         self._freqs.clear()
         self._s21s.clear()
         self._s21s_ph.clear()
+        self._s21s_ph_err.clear()
+        self._s21s_ph_rmse.clear()
         self._s11s.clear()
         self._s22s.clear()
         self._states.clear()
@@ -69,6 +80,9 @@ class MeasureResult:
         self._s21s_ph = [np.unwrap(s) for s in self._s21s_ph]
         ph0 = self._s21s_ph[0]
         self._s21s_ph_err = [calc_error(s, ph0) for s in self._s21s_ph[1:]]
+
+        means = [statistics.mean(vs) for vs in zip(*self._s21s_ph_err)]
+        self._s21s_ph_rmse = [calc_rmse(s, means) for s in self._s21s_ph[1:]]
 
     @property
     def raw_data(self):
@@ -120,3 +134,7 @@ class MeasureResult:
     @property
     def phase_err(self):
         return self._s21s_ph_err
+
+    @property
+    def phase_rmse(self):
+        return self._s21s_ph_rmse
