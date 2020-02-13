@@ -36,6 +36,8 @@ class MeasureResult:
         self.headers = list()
         self._freqs = list()
         self._s21s = list()
+        self._s21s_err = list()
+        self._s21s_rmse = list()
         self._s21s_ph = list()
         self._s21s_ph_err = list()
         self._s21s_ph_rmse = list()
@@ -54,6 +56,8 @@ class MeasureResult:
     def _init(self):
         self._freqs.clear()
         self._s21s.clear()
+        self._s21s_err.clear()
+        self._s21s_rmse.clear()
         self._s21s_ph.clear()
         self._s21s_ph_err.clear()
         self._s21s_ph_rmse.clear()
@@ -68,6 +72,7 @@ class MeasureResult:
         self._calc_vwsr_in()
         self._calc_vwsr_out()
         self._calc_phase_err()
+        self._calc_s21_err()
         self.ready = True
 
     def _calc_vwsr_in(self):
@@ -83,6 +88,14 @@ class MeasureResult:
 
         means = [statistics.mean(vs) for vs in zip(*self._s21s_ph_err)]
         self._s21s_ph_rmse = [calc_rmse(s, means) for s in self._s21s_ph[1:]]
+
+    def _calc_s21_err(self):
+        s0 = self._s21s[0]
+        self._s21s_err = [calc_error(s, s0) for s in self._s21s[1:]]
+
+        means = [statistics.mean(vs) for vs in zip(*self._s21s_err)]
+        self._s21s_rmse = [calc_rmse(s, means) for s in self._s21s[1:]]
+
 
     @property
     def raw_data(self):
@@ -138,3 +151,11 @@ class MeasureResult:
     @property
     def phase_rmse(self):
         return self._s21s_ph_rmse
+
+    @property
+    def s21_err(self):
+        return self._s21s_err
+
+    @property
+    def s21_rmse(self):
+        return self._s21s_rmse

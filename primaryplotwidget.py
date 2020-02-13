@@ -98,6 +98,14 @@ class PrimaryPlotWidget(QWidget):
         self._ui.plotGrid.addWidget(self._plotS21PhaseRmse, 0, 2)
         self._plotS21PhaseRmse.axes_titles = 'F, ГГц', 'φ ско'
 
+        self._plotS21Err = PlotWidget(self, (0, 8), (-10, 10), 5)
+        self._ui.plotGrid.addWidget(self._plotS21Err, 1, 2)
+        self._plotS21Err.axes_titles = 'F, ГГц', 'S21 ош, дБ'
+
+        self._plotS21Rmse = PlotWidget(self, (0, 8), (-10, 10), 5)
+        self._ui.plotGrid.addWidget(self._plotS21Rmse, 0, 3)
+        self._plotS21Rmse.axes_titles = 'F, ГГц', 'S21 ско'
+
         self._ready = False
 
     def preparePlots(self, params):
@@ -114,6 +122,8 @@ class PrimaryPlotWidget(QWidget):
         vswr_out = self._result.vswr_out
         phase_errs = self._result.phase_err
         phase_rmse = self._result.phase_rmse
+        s21_err = self._result.s21_err
+        s21_rmse = self._result.s21_rmse
         n = len(s21s)
 
         self._plotS21.setYRange(min(min(s) for s in s21s), max(max(s) for s in s21s))
@@ -131,6 +141,11 @@ class PrimaryPlotWidget(QWidget):
         self._plotS21PhaseRmse.setYRange(min(min(s) for s in phase_rmse), max(max(s) for s in phase_rmse))
         self._plotS21PhaseRmse.plot(xs_arr=itertools.repeat(freqs, n - 1), ys_arr=phase_rmse)
 
+        self._plotS21Err.setYRange(min(min(s) for s in s21_err), max(max(s) for s in s21_err))
+        self._plotS21Err.plot(xs_arr=itertools.repeat(freqs, n - 1), ys_arr=s21_err)
+
+        self._plotS21Rmse.setYRange(min(min(s) for s in s21_rmse), max(max(s) for s in s21_rmse))
+        self._plotS21Rmse.plot(xs_arr=itertools.repeat(freqs, n - 1), ys_arr=s21_rmse)
 
     # event handlers
     @pyqtSlot()
