@@ -13,7 +13,8 @@ class PowSweepWidget(QWidget):
         self._ui = uic.loadUi('powsweepwidget.ui', self)
 
         self._plot = PlotWidget(parent=None, toolbar=True)
-        self._ui.verticalLayout.addWidget(self._plot)
+        # self._ui.verticalLayout.addWidget(self._plot)
+        self._ui.btnPowSweep.hide()
 
         self._init()
 

@@ -60,6 +60,12 @@ class PlotWidget(QChartView):
     def legend(self):
         return self._chart.legend()
 
+    def setXRange(self, *args):
+        self._axis_x.setRange(*args)
+
+    def setYRange(self, *args):
+        self._axis_y.setRange(*args)
+
 
 class PrimaryPlotWidget(QWidget):
 
@@ -84,9 +90,9 @@ class PrimaryPlotWidget(QWidget):
         self._ui.plotGrid.addWidget(self._plotVswrOut, 1, 0)
         self._plotVswrOut.axes_titles = 'F, ГГц', 'КСВ вых, дБм'
 
-        # self._plotPower = PlotWidget(self)
-        # self._ui.plotGrid.addWidget(self._plotPower, 1, 1)
-        # self._plotPower.axes_titles = 'Ctrl voltage, V', 'Pow, dBm'
+        self._plotS21PhaseErr = PlotWidget(self)
+        self._ui.plotGrid.addWidget(self._plotS21PhaseErr, 1, 1)
+        self._plotS21PhaseErr.axes_titles = 'F, ГГц', 'Phase, deg'
 
         # self._plotPushing = PlotWidget(self)
         # self._ui.plotGrid.addWidget(self._plotPushing, 2, 0)
@@ -94,19 +100,33 @@ class PrimaryPlotWidget(QWidget):
 
         self._ready = False
 
-    def plot(self):
-        print('plotting', self._result)
+    def preparePlots(self, params):
+        f1 = params['F1']
+        f2 = params['F2']
+        self._plotS21.setXRange(f1, f2)
+        self._plotVswrIn.setXRange(f1, f2)
+        self._plotVswrOut.setXRange(f1, f2)
 
+    def plot(self):
         s21s = self._result.s21
         freqs = self._result.freqs
         vswr_in = self._result.vswr_in
         vswr_out = self._result.vswr_out
+        phase_errs = self._result.phase_err
         n = len(s21s)
 
+        self._plotS21.setYRange(min(min(s) for s in s21s), max(max(s) for s in s21s))
         self._plotS21.plot(xs_arr=itertools.repeat(freqs, n), ys_arr=s21s)
+
+        self._plotVswrIn.setYRange(min(min(s) for s in vswr_in), max(max(s) for s in vswr_in))
         self._plotVswrIn.plot(xs_arr=itertools.repeat(freqs, n), ys_arr=vswr_in)
+
+        self._plotVswrOut.setYRange(min(min(s) for s in vswr_out), max(max(s) for s in vswr_out))
         self._plotVswrOut.plot(xs_arr=itertools.repeat(freqs, n), ys_arr=vswr_out)
-        # self._plotPower.plot(xs=result.tune_voltage, ys=result.power)
+
+        self._plotS21PhaseErr.setYRange(min(min(s) for s in phase_errs), max(max(s) for s in phase_errs))
+        self._plotS21PhaseErr.plot(xs_arr=itertools.repeat(freqs, n - 1), ys_arr=phase_errs)
+
         # self._plotPushing.plot(xs=result.tune_voltage, ys=result.pushing)
         # self._plotPhaseNoise.plot(xs=result.tune_voltage, ys=result.noise)
 

@@ -1,9 +1,27 @@
-def calc_vswr(in_mags: list):
-    module = [abs(x) for x in in_mags]
-    plus = (1 + x for x in module)
-    minus = (1 - x for x in module)
-    return list(p / m for p, m in zip(plus, minus))
+import random
+import numpy as np
 
+
+def calc_vswr(in_mags: list):
+    temp = map(lambda x: x / 20, in_mags)
+    modulated = list(map(lambda x: pow(10, x), temp))
+    plus = map(lambda x: 1 + x, modulated)
+    minus = map(lambda x: 1 - x, modulated)
+    out = map(lambda x: x[0] / x[1], zip(plus, minus))
+    return list(out)
+
+
+def calc_error(array, zero):
+    # TODO remove on prod
+    # return [a - z + random.uniform(-0.5, 0.5) for a, z in zip(array, zero)]
+    return [a - z + random.uniform(-0.1, 0.1) for a, z in zip(array, zero)]
+
+
+# + 1) vswr for dB values for s11, s22
+
+# TODO 2) s21 amps -- raw - mean db -> rms for db
+# TODO 3) calc unwrapped phase -> graph phase error Fn - F0 (raw phase - mean phase)
+# TODO 4) phraph rms phase
 
 class MeasureResult:
 
@@ -11,6 +29,7 @@ class MeasureResult:
         self.headers = list()
         self._freqs = list()
         self._s21s = list()
+        self._s21s_ph = list()
         self._s11s = list()
         self._s22s = list()
         self._states = list()
@@ -26,6 +45,7 @@ class MeasureResult:
     def _init(self):
         self._freqs.clear()
         self._s21s.clear()
+        self._s21s_ph.clear()
         self._s11s.clear()
         self._s22s.clear()
         self._states.clear()
@@ -36,6 +56,7 @@ class MeasureResult:
     def _process(self):
         self._calc_vwsr_in()
         self._calc_vwsr_out()
+        self._calc_phase_err()
         self.ready = True
 
     def _calc_vwsr_in(self):
@@ -43,6 +64,11 @@ class MeasureResult:
 
     def _calc_vwsr_out(self):
         self._vswr_out = [calc_vswr(s) for s in self._s22s]
+
+    def _calc_phase_err(self):
+        self._s21s_ph = [np.unwrap(s) for s in self._s21s_ph]
+        ph0 = self._s21s_ph[0]
+        self._s21s_ph_err = [calc_error(s, ph0) for s in self._s21s_ph[1:]]
 
     @property
     def raw_data(self):
@@ -63,6 +89,8 @@ class MeasureResult:
                     self._s11s.append(array)
                 elif i == 3:
                     self._s21s.append(array)
+                elif i == 4:
+                    self._s21s_ph.append(array)
                 elif i == 7:
                     self._s22s.append(array)
         self._process()
@@ -84,3 +112,11 @@ class MeasureResult:
     def vswr_out(self):
         # TODO return actual VSWR
         return self._vswr_out
+
+    @property
+    def phase(self):
+        return self._s21s_ph
+
+    @property
+    def phase_err(self):
+        return self._s21s_ph_err

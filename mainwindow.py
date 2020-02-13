@@ -74,4 +74,5 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def on_measureComplete(self):
         print('meas complete')
+        self._plotWidget.preparePlots(self._instrumentController.secondaryParams)
         self._plotWidget.plot()
