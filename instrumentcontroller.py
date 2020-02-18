@@ -156,7 +156,7 @@ class InstrumentController(QObject):
             prog.set_lpf_code(state)
 
             if not mock_enabled:
-                time.sleep(0.1)
+                time.sleep(0.4)
 
             pna.send(f'CALC1:PAR:SEL "CH1_S21"')
             pna.query('*OPC?')
@@ -164,7 +164,7 @@ class InstrumentController(QObject):
             out.append(parse_float_list(res))
 
             if not mock_enabled:
-                time.sleep(0.2)
+                time.sleep(0.4)
         return out
 
     def _phase_for_state(self, pattern):
