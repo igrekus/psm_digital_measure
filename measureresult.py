@@ -90,11 +90,12 @@ class MeasureResult:
         self._s21s_ph_rmse = [calc_rmse(s, means) for s in self._s21s_ph[1:]]
 
     def _calc_s21_err(self):
-        s0 = self._s21s[0]
-        self._s21s_err = [calc_error(s, s0) for s in self._s21s[1:]]
+        means = [statistics.mean(vs) for vs in zip(*self._s21s)]
+        self._s21s_err = [calc_error(s, means) for s in self._s21s]
 
-        means = [statistics.mean(vs) for vs in zip(*self._s21s_err)]
-        self._s21s_rmse = [calc_rmse(s, means) for s in self._s21s[1:]]
+        self._s21s_rmse = [calc_rmse(s, means) for s in self._s21s]
+
+        self._misc = [self._s21s_err[0]]
 
 
     @property
@@ -159,3 +160,7 @@ class MeasureResult:
     @property
     def s21_rmse(self):
         return self._s21s_rmse
+
+    @property
+    def misc(self):
+        return self._misc
