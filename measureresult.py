@@ -1,3 +1,4 @@
+import math
 import random
 import statistics
 import numpy as np
@@ -25,8 +26,8 @@ def calc_phase_error(array, zero, ideal):
     return [a - z - ideal + random.uniform(-0.1, 0.1) for a, z in zip(array, zero)]
 
 
-def calc_rmse(array, zero):
-    return [rmse(a, z) for a, z in zip(array, zero)]
+def calc_rmse(values, mean):
+    return math.sqrt(sum(pow(mean - v, 2) for v in values) / len(values))
 
 
 # + 1) vswr for dB values for s11, s22
@@ -48,7 +49,7 @@ class MeasureResult:
         self._s21s_ph_rmse = list()
         self._s11s = list()
         self._s22s = list()
-        self._states = list()
+        self._ideal_phase = list()
 
         self._vswr_in = list()
         self._vswr_out = list()
@@ -68,7 +69,7 @@ class MeasureResult:
         self._s21s_ph_rmse.clear()
         self._s11s.clear()
         self._s22s.clear()
-        self._states.clear()
+        self._ideal_phase.clear()
 
         self._vswr_in.clear()
         self._vswr_out.clear()
@@ -92,13 +93,16 @@ class MeasureResult:
         self._s21s_ph_err = [calc_phase_error(s, ph0, ideal) for s, ideal in zip(self._s21s_ph[1:], self._ideal_phase[1:])]
 
         means = [statistics.mean(vs) for vs in zip(*self._s21s_ph_err)]
-        self._s21s_ph_rmse = [calc_rmse(s, means) for s in self._s21s_ph[1:]]
+
+        for *vs, mean in zip(*self._s21s_ph_err, means):
+            self._s21s_ph_rmse.append(calc_rmse(vs, mean))
 
     def _calc_s21_err(self):
         means = [statistics.mean(vs) for vs in zip(*self._s21s)]
         self._s21s_err = [calc_error(s, means) for s in self._s21s]
 
-        self._s21s_rmse = [calc_rmse(s, means) for s in self._s21s]
+        for *vs, mean in zip(*self._s21s, means):
+            self._s21s_rmse.append(calc_rmse(vs, mean))
 
         self._misc = [self._s21s_err[0]]
 
@@ -111,7 +115,7 @@ class MeasureResult:
     def raw_data(self, args):
         print('process result')
         self._init()
-        points, s2p, self._states = args
+        points, s2p, self._ideal_phase = args
 
         for pars in s2p:
             for i in range(9):
