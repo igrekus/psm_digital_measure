@@ -20,6 +20,11 @@ def calc_error(array, zero):
     return [a - z + random.uniform(-0.1, 0.1) for a, z in zip(array, zero)]
 
 
+def calc_phase_error(array, zero, ideal):
+    # return [a - z - ideal for a, z in zip(array, zero)]
+    return [a - z - ideal + random.uniform(-0.1, 0.1) for a, z in zip(array, zero)]
+
+
 def calc_rmse(array, zero):
     return [rmse(a, z) for a, z in zip(array, zero)]
 
@@ -84,7 +89,7 @@ class MeasureResult:
     def _calc_phase_err(self):
         self._s21s_ph = [np.unwrap(s, discont=np.rad2deg(np.pi)) for s in self._s21s_ph]
         ph0 = self._s21s_ph[0]
-        self._s21s_ph_err = [calc_error(s, ph0) for s in self._s21s_ph[1:]]
+        self._s21s_ph_err = [calc_phase_error(s, ph0, ideal) for s, ideal in zip(self._s21s_ph[1:], self._ideal_phase[1:])]
 
         means = [statistics.mean(vs) for vs in zip(*self._s21s_ph_err)]
         self._s21s_ph_rmse = [calc_rmse(s, means) for s in self._s21s_ph[1:]]
