@@ -82,7 +82,7 @@ class MeasureResult:
         self._vswr_out = [calc_vswr(s) for s in self._s22s]
 
     def _calc_phase_err(self):
-        self._s21s_ph = [np.unwrap(s) for s in self._s21s_ph]
+        self._s21s_ph = [np.unwrap(s, discont=np.rad2deg(np.pi)) for s in self._s21s_ph]
         ph0 = self._s21s_ph[0]
         self._s21s_ph_err = [calc_error(s, ph0) for s in self._s21s_ph[1:]]
 
