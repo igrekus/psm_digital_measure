@@ -18,8 +18,7 @@ class InstrumentController(QObject):
     ]
 
     states = {
-        # i: f'{i:06b}' for i in range(64)
-        i: i for i in range(64)
+        i * 5.625: i for i in range(64)
     }
 
     def __init__(self, parent=None):
@@ -150,10 +149,12 @@ class InstrumentController(QObject):
         prog = self._instruments['Программатор']
 
         out = []
-        for state in [v for i, v in enumerate(self.states.values()) if i in [0, 1, 2, 4, 8, 16, 32, 63]]:
-            self._phase_values.append(self._phase_for_state(state))
+        for deg, code in self.states.items():
+            if code not in [0, 1, 2, 4, 8, 16, 32, 63]:
+                continue
+            self._phase_values.append(deg)
 
-            prog.set_lpf_code(state)
+            prog.set_lpf_code(code)
 
             if not mock_enabled:
                 time.sleep(0.4)
@@ -166,11 +167,6 @@ class InstrumentController(QObject):
             if not mock_enabled:
                 time.sleep(0.4)
         return out
-
-    def _phase_for_state(self, pattern):
-        # TODO calculate phase by bit pattern
-        # return sum([ph * pt for ph, pt in zip(self.phases, pattern)])
-        return pattern
 
     def pow_sweep(self):
         print('pow sweep')
