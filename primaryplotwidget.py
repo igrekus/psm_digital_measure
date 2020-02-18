@@ -140,14 +140,23 @@ class PrimaryPlotWidget(QWidget):
         for xs, ys in zip(itertools.repeat(freqs, n), s21s):
             self._plotS21.plot(xs, ys)
 
-        # for xs, ys in zip(self._result.errorPerCodeXs, self._result.errorPerCodeYs):
-        #     self._plotVswrIn.plot(xs, ys)
-        #
-        # for xs, ys in zip(self._result.inputInverseLossXs, self._result.inputInverseLossYs):
-        #     self._plotVswrOut.plot(xs, ys)
-        #
-        # for xs, ys in zip(self._result.outputInverseLossXs, self._result.outputInverseLossYs):
-        #     self._plotS21PhaseErr.plot(xs, ys)
+        for xs, ys in zip(itertools.repeat(freqs, n), vswr_in):
+            self._plotVswrIn.plot(xs, ys)
+
+        for xs, ys in zip(itertools.repeat(freqs, n), vswr_out):
+            self._plotVswrOut.plot(xs, ys)
+
+        for xs, ys in zip(itertools.repeat(freqs, n - 1), phase_errs):
+            self._plotS21PhaseErr.plot(xs, ys)
+
+        for xs, ys in zip([freqs], [phase_rmse]):
+            self._plotS21PhaseRmse.plot(xs, ys)
+
+        for xs, ys in zip(itertools.repeat(freqs, n), s21_err):
+            self._plotS21Err.plot(xs, ys)
+
+        for xs, ys in zip([freqs], [s21_rmse]):
+            self._plotS21Rmse.plot(xs, ys)
 
     def save(self, img_path='./image'):
         try:
