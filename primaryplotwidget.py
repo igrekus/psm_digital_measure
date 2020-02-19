@@ -135,6 +135,8 @@ class PrimaryPlotWidget(QWidget):
         phase_rmse = self._result.phase_rmse
         s21_err = self._result.s21_err
         s21_rmse = self._result.s21_rmse
+        misc = self._result.misc
+
         n = len(s21s)
 
         for xs, ys in zip(itertools.repeat(freqs, n), s21s):
@@ -157,6 +159,9 @@ class PrimaryPlotWidget(QWidget):
 
         for xs, ys in zip([freqs], [s21_rmse]):
             self._plotS21Rmse.plot(xs, ys)
+
+        for xs, ys in zip([freqs], misc):
+            self._plotMisc.plot(xs, ys)
 
     def save(self, img_path='./image'):
         try:
