@@ -16,13 +16,10 @@ def calc_vswr(in_mags: list):
 
 def calc_error(array, zero):
     return [a - z for a, z in zip(array, zero)]
-    # return [a - z + random.uniform(-0.1, 0.1) for a, z in zip(array, zero)]
 
 
 def calc_phase_error(array, zero, ideal):
-    return [a - z for a, z in zip(array, zero)]
-    # return [a - z - ideal for a, z in zip(array, zero)]
-    # return [a - z - ideal + random.uniform(-0.1, 0.1) for a, z in zip(array, zero)]
+    return [a - z - ideal if (a - z - ideal) > -200 else (a - z - ideal + 360) for a, z in zip(array, zero)]
 
 
 def calc_rmse(values, mean):
