@@ -142,12 +142,10 @@ class MeasureResult:
 
     @property
     def vswr_in(self):
-        # TODO return actual VSWR
         return self._vswr_in
 
     @property
     def vswr_out(self):
-        # TODO return actual VSWR
         return self._vswr_out
 
     @property
