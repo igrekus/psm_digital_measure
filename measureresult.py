@@ -3,7 +3,6 @@ import random
 import statistics
 import numpy as np
 
-from ml_metrics import rmse
 
 
 def calc_vswr(in_mags: list):
