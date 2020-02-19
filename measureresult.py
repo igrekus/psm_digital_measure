@@ -173,3 +173,8 @@ class MeasureResult:
     @property
     def misc(self):
         return self._misc
+
+    @property
+    def stats(self):
+        return '[[1, 2, 3] * 7]'
+

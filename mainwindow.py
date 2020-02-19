@@ -8,6 +8,7 @@ from measuremodel import MeasureModel
 from measurewidget import MeasureWidgetWithSecondaryParameters
 from powsweepwidget import PowSweepWidget
 from primaryplotwidget import PrimaryPlotWidget
+from statwidget import StatWidget
 
 
 class MainWindow(QMainWindow):
@@ -30,10 +31,13 @@ class MainWindow(QMainWindow):
         self._measureModel = MeasureModel(parent=self, controller=self._instrumentController)
         self._plotWidget = PrimaryPlotWidget(parent=self, result=self._instrumentController.result)
         self._powSweepWidget = PowSweepWidget(parent=self, controller=self._instrumentController)
+        self._statWidget = StatWidget(parent=self, result=self._instrumentController.result)
 
         # init UI
         self._ui.layInstrs.insertWidget(0, self._connectionWidget)
         self._ui.layInstrs.insertWidget(1, self._measureWidget)
+        self._ui.layInstrs.insertWidget(2, self._statWidget)
+
         self._ui.tabWidget.insertTab(0, self._plotWidget, 'Автоматическое измерение')
         self._ui.tabWidget.insertTab(1, self._powSweepWidget, 'Прогон по частоте')
 
@@ -74,5 +78,6 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def on_measureComplete(self):
         print('meas complete')
-        self._plotWidget.preparePlots(self._instrumentController.secondaryParams)
+        # self._plotWidget.preparePlots(self._instrumentController.secondaryParams)
         self._plotWidget.plot()
+        self._statWidget.stats = self._instrumentController.result.stats
