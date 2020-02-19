@@ -68,14 +68,14 @@ class PrimaryPlotWidget(QWidget):
 
         self._grid = QGridLayout()
 
-        self._plotS21 = PlotWidget(parent=None)
-        self._plotVswrIn = PlotWidget(parent=None)
-        self._plotVswrOut = PlotWidget(parent=None)
-        self._plotS21PhaseErr = PlotWidget(parent=None)
-        self._plotS21PhaseRmse = PlotWidget(parent=None)
-        self._plotS21Err = PlotWidget(parent=None)
-        self._plotS21Rmse = PlotWidget(parent=None)
-        self._plotMisc = PlotWidget(parent=None)
+        self._plotS21 = PlotWidget(parent=None, toolbar=True)
+        self._plotVswrIn = PlotWidget(parent=None, toolbar=True)
+        self._plotVswrOut = PlotWidget(parent=None, toolbar=True)
+        self._plotS21PhaseErr = PlotWidget(parent=None, toolbar=True)
+        self._plotS21PhaseRmse = PlotWidget(parent=None, toolbar=True)
+        self._plotS21Err = PlotWidget(parent=None, toolbar=True)
+        self._plotS21Rmse = PlotWidget(parent=None, toolbar=True)
+        self._plotMisc = PlotWidget(parent=None, toolbar=True)
 
         self._grid.addWidget(self._plotS21, 0, 0)
         self._grid.addWidget(self._plotVswrIn, 0, 1)
