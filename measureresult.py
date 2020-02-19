@@ -50,6 +50,14 @@ class MeasureResult:
         self._vswr_in = list()
         self._vswr_out = list()
 
+        self._s21_mins = list()
+        self._vswr_in_max = list()
+        self._vswr_out_max = list()
+        self._phase_rmse_values = list()
+        self._s21_rmse_values = list()
+        self._phase_err_max = list()
+        self._s21_err_max = list()
+
         self.ready = False
 
     def __bool__(self):
@@ -70,11 +78,20 @@ class MeasureResult:
         self._vswr_in.clear()
         self._vswr_out.clear()
 
+        self._s21_mins.clear()
+        self._vswr_in_max.clear()
+        self._vswr_out_max.clear()
+        self._phase_rmse_values.clear()
+        self._s21_rmse_values.clear()
+        self._phase_err_max.clear()
+        self._s21_err_max.clear()
+
     def _process(self):
         self._calc_vwsr_in()
         self._calc_vwsr_out()
         self._calc_phase_err()
         self._calc_s21_err()
+        self._calc_stats()
         self.ready = True
 
     def _calc_vwsr_in(self):
@@ -100,8 +117,26 @@ class MeasureResult:
         for *vs, mean in zip(*self._s21s, means):
             self._s21s_rmse.append(calc_rmse(vs, mean))
 
-        self._misc = [self._s21s_err[0]]
+    def _calc_stats(self):
+        mid = len(self._freqs) // 2
 
+        vs = list(zip(*self.s21))
+        self._s21_mins = [min(vs[0]), min(vs[mid]), min(vs[-1])]
+
+        vs = list(zip(*self.vswr_in))
+        self._vswr_in_max = [max(vs[0]), max(vs[mid]), max(vs[-1])]
+
+        vs = list(zip(*self.vswr_out))
+        self._vswr_out_max = [max(vs[0]), max(vs[mid]), max(vs[-1])]
+
+        self._phase_rmse_values = [self.phase_rmse[0], self.phase_rmse[mid], self.phase_rmse[-1]]
+        self._s21_rmse_values = [self.s21_rmse[0], self.s21_rmse[mid], self.s21_rmse[-1]]
+
+        vs = list(zip(*self.phase_err))
+        self._phase_err_max = [max(abs(v) for v in vs[0]), max(abs(v) for v in vs[mid]), max(abs(v) for v in vs[-1])]
+
+        vs = list(zip(*self.s21_err))
+        self._s21_err_max = [max(abs(v) for v in vs[0]), max(abs(v) for v in vs[mid]), max(abs(v) for v in vs[-1])]
 
     @property
     def raw_data(self):
@@ -170,5 +205,44 @@ class MeasureResult:
 
     @property
     def stats(self):
-        return '[[1, 2, 3] * 7]'
+        mid = len(self.freqs) // 2
+        f1 = self.freqs[0] / 1_000_000_000
+        f2 = self.freqs[mid] / 1_000_000_000
+        f3 = self.freqs[-2] / 1_000_000_000
+
+        return f'''S12 минимум:
+{self._s21_mins[0]:.02f} дБ на {f1} ГГц
+{self._s21_mins[1]:.02f} дБ на {f2} ГГц
+{self._s21_mins[2]:.02f} дБ на {f3} ГГц
+
+КСВ вх макс:
+{self._vswr_in_max[0]:.02f} на {f1} ГГц
+{self._vswr_in_max[1]:.02f} на {f2} ГГц
+{self._vswr_in_max[2]:.02f} на {f3} ГГц
+
+КСВ вых макс:
+{self._vswr_out_max[0]:.02f} на {f1} ГГц
+{self._vswr_out_max[1]:.02f} на {f2} ГГц
+{self._vswr_out_max[2]:.02f} на {f3} ГГц
+
+φ СКО:
+{self._phase_rmse_values[0]:.02f} град на {f1} ГГц
+{self._phase_rmse_values[1]:.02f} град на {f2} ГГц
+{self._phase_rmse_values[2]:.02f} град на {f3} ГГц
+
+S21 СКО:
+{self._s21_rmse_values[0]:.02f} дБ на {f1} ГГц
+{self._s21_rmse_values[1]:.02f} дБ на {f2} ГГц
+{self._s21_rmse_values[2]:.02f} дБ на {f3} ГГц
+
+φ ошибка:
+{self._phase_err_max[0]:.02f} град на {f1} ГГц
+{self._phase_err_max[1]:.02f} град на {f2} ГГц
+{self._phase_err_max[2]:.02f} град на {f3} ГГц
+
+S21 ошибка:
+{self._s21_err_max[0]:.02f} дБ на {f1} ГГц
+{self._s21_err_max[1]:.02f} дБ на {f2} ГГц
+{self._s21_err_max[2]:.02f} дБ на {f3} ГГц
+'''
 
