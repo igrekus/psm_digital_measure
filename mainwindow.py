@@ -36,7 +36,7 @@ class MainWindow(QMainWindow):
         # init UI
         self._ui.layInstrs.insertWidget(0, self._connectionWidget)
         self._ui.layInstrs.insertWidget(1, self._measureWidget)
-        self._ui.layInstrs.insertWidget(2, self._statWidget)
+        self._ui.layInstrs.insertWidget(2, self._statWidget, 10)
 
         self._ui.tabWidget.insertTab(0, self._plotWidget, 'Автоматическое измерение')
         self._ui.tabWidget.insertTab(1, self._powSweepWidget, 'Прогон по частоте')
