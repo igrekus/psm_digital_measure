@@ -160,7 +160,7 @@ class PrimaryPlotWidget(QWidget):
         for xs, ys in zip([freqs], [s21_rmse]):
             self._plotS21Rmse.plot(xs, ys)
 
-        for xs, ys in zip([freqs], misc):
+        for xs, ys in zip([freqs] * len(misc), misc):
             self._plotMisc.plot(xs, ys)
 
     def save(self, img_path='./image'):
