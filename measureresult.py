@@ -220,43 +220,44 @@ class MeasureResult:
     @property
     def stats(self):
         mid = len(self.freqs) // 2
-        f1 = self.freqs[0] / 1_000_000_000
-        f2 = self.freqs[mid] / 1_000_000_000
-        f3 = self.freqs[-2] / 1_000_000_000
+        f1 = round(self.freqs[0] / 1_000_000_000, 2)
+        f2 = round(self.freqs[mid] / 1_000_000_000, 2)
+        f3 = round(self.freqs[-1] / 1_000_000_000, 2)
 
-        return f'''S12 минимум:
+        return f'''Потери, минимум:
 {self._s21_mins[0]:.02f} дБ на {f1} ГГц
 {self._s21_mins[1]:.02f} дБ на {f2} ГГц
 {self._s21_mins[2]:.02f} дБ на {f3} ГГц
 
-КСВ вх макс:
+КСВ вх, макс:
 {self._vswr_in_max[0]:.02f} на {f1} ГГц
 {self._vswr_in_max[1]:.02f} на {f2} ГГц
 {self._vswr_in_max[2]:.02f} на {f3} ГГц
 
-КСВ вых макс:
+КСВ вых, макс:
 {self._vswr_out_max[0]:.02f} на {f1} ГГц
 {self._vswr_out_max[1]:.02f} на {f2} ГГц
 {self._vswr_out_max[2]:.02f} на {f3} ГГц
 
-φ СКО:
-{self._phase_rmse_values[0]:.02f} град на {f1} ГГц
-{self._phase_rmse_values[1]:.02f} град на {f2} ГГц
-{self._phase_rmse_values[2]:.02f} град на {f3} ГГц
-
-S21 СКО:
-{self._s21_rmse_values[0]:.02f} дБ на {f1} ГГц
-{self._s21_rmse_values[1]:.02f} дБ на {f2} ГГц
-{self._s21_rmse_values[2]:.02f} дБ на {f3} ГГц
-
-φ ошибка:
+φ, ошибка:
 {self._phase_err_max[0]:.02f} град на {f1} ГГц
 {self._phase_err_max[1]:.02f} град на {f2} ГГц
 {self._phase_err_max[2]:.02f} град на {f3} ГГц
 
-S21 ошибка:
+φ, СКО:
+{self._phase_rmse_values[0]:.02f} град на {f1} ГГц
+{self._phase_rmse_values[1]:.02f} град на {f2} ГГц
+{self._phase_rmse_values[2]:.02f} град на {f3} ГГц
+
+Потери, ошибка:
 {self._s21_err_max[0]:.02f} дБ на {f1} ГГц
 {self._s21_err_max[1]:.02f} дБ на {f2} ГГц
 {self._s21_err_max[2]:.02f} дБ на {f3} ГГц
+
+Потери, СКО:
+{self._s21_rmse_values[0]:.02f} дБ на {f1} ГГц
+{self._s21_rmse_values[1]:.02f} дБ на {f2} ГГц
+{self._s21_rmse_values[2]:.02f} дБ на {f3} ГГц
+
 '''
 
