@@ -3,6 +3,9 @@ import math
 import statistics
 
 
+# TODO calc mean from F-err
+# TODO plot only main states
+
 def unwrap(xw):
     dist = 180
     xu = list(xw)
@@ -37,12 +40,6 @@ def calc_phase_error(array, zero, ideal):
 def calc_rmse(values, mean):
     return math.sqrt(sum(pow(mean - v, 2) for v in values) / len(values))
 
-
-# + 1) vswr for dB values for s11, s22
-
-# TODO 3) calc unwrapped phase -> graph phase error Fn - F0 (raw phase - mean phase)
-# TODO 4) phraph rms phase
-# TODO 2) s21 amps -- raw - mean db -> rms for db
 
 class MeasureResult:
 
