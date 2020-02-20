@@ -120,6 +120,9 @@ class MeasureResult:
 
         means = [statistics.mean(vs) for vs in zip(*self._s21s_ph_err)]
 
+        self._s21s_ph_err = [calc_error(s, mean) for s, mean in
+                             zip(self._s21s_ph_err, itertools.repeat(means, len(self._s21s_ph_err)))]
+
         for *vs, mean in zip(*self._s21s_ph_err, means):
             self._s21s_ph_rmse.append(calc_rmse(vs, mean))
 
