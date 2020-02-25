@@ -160,7 +160,12 @@ class InstrumentController(QObject):
 
             pna.send(f'CALC1:PAR:SEL "CH1_S21"')
             pna.query('*OPC?')
-            # res = pna.query(f'CALC1:DATA:SNP? 2')
+            res = pna.query(f'CALC1:DATA:SNP? 2')
+            # with open(f's2p_{code}.s2p', mode='wt', encoding='utf-8') as f:
+            #     f.write(res)
+            if mock_enabled:
+                with open(f's2p_{code}.s2p', mode='rt', encoding='utf-8') as f:
+                    res = list(f.readlines())[0].strip()
             out.append(parse_float_list(res))
 
             if not mock_enabled:
