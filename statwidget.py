@@ -11,7 +11,7 @@ class StatWidget(QWidget):
 
         self._ui = uic.loadUi('statwidget.ui', self)
 
-        self._ui.texteditStat.setPlainText('lol text?\nyeah')
+        self._ui.texteditStat.setPlainText('')
 
     @property
     def stats(self):
