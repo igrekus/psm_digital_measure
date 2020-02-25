@@ -122,16 +122,15 @@ class InstrumentController(QObject):
     def _init(self, params):
         pna = self._instruments['Анализатор']
         prog = self._instruments['Программатор']
-#
+
         pna.send('SYST:PRES')
         pna.query('*OPC?')
-        # pna.send('CALC:PAR:DEL:ALL')
+        # pna.send('SENS1:CORR ON')
 
         pna.send('CALC1:PAR:DEF "CH1_S21",S21')
 
         # c:\program files\agilent\newtowrk analyzer\UserCalSets
-        # TODO calibration
-        # pna.send('SENS1:CORR:CSET:ACT "-20dBm_1.1-1.4G",1')
+        pna.send('SENS1:CORR:CSET:ACT "Upr_tst",1')
         # pna.send('SENS2:CORR:CSET:ACT "-20dBm_1.1-1.4G",1')
 
         pna.send(f'SENS1:SWE:POIN {self.sweep_points}')
