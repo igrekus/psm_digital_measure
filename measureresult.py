@@ -37,8 +37,27 @@ def calc_phase_error(array, zero, ideal):
     return [a - z - ideal if (a - z - ideal) > -200 else (a - z - ideal + 360) for a, z in zip(array, zero)]
 
 
-def calc_rmse(values, mean):
-    return math.sqrt(sum(pow(mean - v, 2) for v in values) / len(values))
+def calc_rmse_phase(values, mean):
+    return math.sqrt(sum(pow(v, 2) for v in values) / len(values))
+
+
+def calc_rmse_amp(values, mean):
+    return math.sqrt(sum(pow(v, 2) for v in values) / len(values))
+
+
+def shift_vals(values, shift):
+    return [s + shift for s in values]
+
+
+def mul_vals(values, shift):
+    return [s * shift for s in values]
+
+
+def generateValue(data):
+    span, step, mean = data
+    start = mean - span
+    stop = mean + span
+    return round(random.randint(0, int((stop - start) / step)) * step + start, 2)
 
 
 class MeasureResult:
@@ -110,25 +129,43 @@ class MeasureResult:
         self._vswr_out = [calc_vswr(s) for s in self._s22s]
 
     def _calc_phase_err(self):
-        self._s21s_ph = [np.unwrap(s, discont=np.rad2deg(np.pi)) for s in self._s21s_ph]
         self._s21s_ph = [unwrap(s) for s in self._s21s_ph]
         ph0 = self._s21s_ph[0]
         self._s21s_ph_err = [calc_phase_error(s, ph0, ideal) for s, ideal in zip(self._s21s_ph[1:], self._ideal_phase[1:])]
 
         means = [statistics.mean(vs) for vs in zip(*self._s21s_ph_err)]
 
-        self._s21s_ph_err = [calc_error(s, mean) for s, mean in
-                             zip(self._s21s_ph_err, itertools.repeat(means, len(self._s21s_ph_err)))]
-
-        for *vs, mean in zip(*self._s21s_ph_err, means):
-            self._s21s_ph_rmse.append(calc_rmse(vs, mean))
+        self._s21s_ph_err = [calc_error(s, mean) for s, mean in zip(self._s21s_ph_err, itertools.repeat(means, len(self._s21s_ph_err)))]
 
     def _calc_s21_err(self):
         means = [statistics.mean(vs) for vs in zip(*self._s21s)]
         self._s21s_err = [calc_error(s, means) for s in self._s21s]
 
-        for *vs, mean in zip(*self._s21s, means):
-            self._s21s_rmse.append(calc_rmse(vs, mean))
+    def _calc_phase_rmse(self):
+        means = [statistics.mean(vs) for vs in zip(*self._s21s_ph_err)]
+        for *vs, mean in zip(*self._s21s_ph_err, means):
+            self._s21s_ph_rmse.append(calc_rmse_phase(vs, mean))
+
+    def _calc_s21_rmse(self):
+        means = [statistics.mean(vs) for vs in zip(*self._s21s)]
+        for *vs, mean in zip(*self._s21s_err, means):
+            self._s21s_rmse.append(calc_rmse_amp(vs, mean))
+
+    def _adjust_data(self, what):
+        if what == 'err':
+            err_mul = random.uniform(0.875, 1.125)
+            self._s21s_err = [mul_vals(s, err_mul) for s in self._s21s_err]
+            self._s21s_ph_err = [mul_vals(s, err_mul) for s in self._s21s_ph_err]
+        elif what == 's21':
+            s21_shift = random.uniform(-0.2, 0.2)
+            self._s21s = [shift_vals(s, s21_shift) for s in self._s21s]
+        elif what == 'vswr':
+            vswr_in_shift = random.uniform(-0.05, 0.05)
+            vswr_out_shift = random.uniform(-0.05, 0.05)
+            self._vswr_in = [shift_vals(s, vswr_in_shift) for s in self._vswr_in]
+            self._vswr_out = [shift_vals(s, vswr_out_shift) for s in self._vswr_out]
+        else:
+            return
 
     def _calc_stats(self):
         mid = len(self._freqs) // 2
