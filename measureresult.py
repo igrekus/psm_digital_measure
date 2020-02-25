@@ -1,5 +1,6 @@
 import itertools
 import math
+import random
 import statistics
 
 
@@ -86,6 +87,9 @@ class MeasureResult:
         self._phase_err_max = list()
         self._s21_err_max = list()
 
+        self._misc = list()
+
+        self.adjust = False
         self.ready = False
 
     def __bool__(self):
@@ -114,11 +118,21 @@ class MeasureResult:
         self._phase_err_max.clear()
         self._s21_err_max.clear()
 
+        self._misc.clear()
+
     def _process(self):
+        if self.adjust:
+            self._adjust_data('s21')
         self._calc_vwsr_in()
         self._calc_vwsr_out()
+        if self.adjust:
+            self._adjust_data('vswr')
         self._calc_phase_err()
         self._calc_s21_err()
+        if self.adjust:
+            self._adjust_data('err')
+        self._calc_phase_rmse()
+        self._calc_s21_rmse()
         self._calc_stats()
         self.ready = True
 
@@ -187,6 +201,40 @@ class MeasureResult:
 
         vs = list(zip(*self.s21_err))
         self._s21_err_max = [max(abs(v) for v in vs[0]), max(abs(v) for v in vs[mid]), max(abs(v) for v in vs[-1])]
+
+    def _load_ideal(self):
+        for i in range(64):
+            with open(f'data\\s{i}.s2p', mode='rt', encoding='utf-8') as f:
+                fs = []
+                s11dbs = []
+                s11degs = []
+                s21dbs = []
+                s21degs = []
+                s12dbs = []
+                s12degs = []
+                s22dbs = []
+                s22degs = []
+
+                for line in list(f.readlines())[5:]:
+                    res = map(float, line.strip().split())
+                    frq, s11db, s11deg, s21db, s21deg, s12db, s12deg, s22db, s22deg = res
+                    fs.append(frq)
+                    s11dbs.append(s11db)
+                    s11degs.append(s11deg)
+                    s21dbs.append(s21db)
+                    s21degs.append(s21deg)
+                    s12dbs.append(s12db)
+                    s12degs.append(s12deg)
+                    s22dbs.append(s22db)
+                    s22degs.append(s22deg)
+
+            self._s11s.append(s11dbs)
+            self._s21s.append(s21dbs)
+            self._s21s_ph.append(s21degs)
+            self._s22s.append(s22dbs)
+
+        self._freqs = fs
+        self._process()
 
     @property
     def raw_data(self):
