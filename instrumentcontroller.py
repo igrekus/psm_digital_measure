@@ -161,6 +161,10 @@ class InstrumentController(QObject):
             pna.send(f'CALC1:PAR:SEL "CH1_S21"')
             pna.query('*OPC?')
             res = pna.query(f'CALC1:DATA:SNP? 2')
+
+            pna.send(f'CALC:DATA:SNP:PORTs:Save "1,2", "d:/ksa/psm/s{code}.s2p"')
+            pna.send(f'MMEM:STOR "d:/ksa/psm1/s{code}.s2p"')
+
             # with open(f's2p_{code}.s2p', mode='wt', encoding='utf-8') as f:
             #     f.write(res)
             if mock_enabled:
