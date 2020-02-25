@@ -49,6 +49,7 @@ class MainWindow(QMainWindow):
 
         self._measureWidget.secondaryChanged.connect(self._instrumentController.on_secondary_changed)
 
+        self._measureWidget.measureStarted.connect(self.on_measureStarted)
         self._measureWidget.measureComplete.connect(self._measureModel.update)
         self._measureWidget.measureComplete.connect(self.on_measureComplete)
 
@@ -81,3 +82,7 @@ class MainWindow(QMainWindow):
         # self._plotWidget.preparePlots(self._instrumentController.secondaryParams)
         self._plotWidget.plot()
         self._statWidget.stats = self._instrumentController.result.stats
+
+    @pyqtSlot()
+    def on_measureStarted(self):
+        self._plotWidget.clear()

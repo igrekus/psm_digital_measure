@@ -24,6 +24,7 @@ class MeasureWidget(QWidget):
     selectedChanged = pyqtSignal(str)
     sampleFound = pyqtSignal()
     measureComplete = pyqtSignal()
+    measureStarted = pyqtSignal()
 
     def __init__(self, parent=None, controller=None):
         super().__init__(parent=parent)
@@ -86,6 +87,7 @@ class MeasureWidget(QWidget):
     @pyqtSlot()
     def on_btnMeasure_clicked(self):
         print('start measure')
+        self.measureStarted.emit()
         self.measure()
 
     @pyqtSlot(str)
