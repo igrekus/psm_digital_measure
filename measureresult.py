@@ -244,7 +244,14 @@ class MeasureResult:
     def raw_data(self, args):
         print('process result')
         self._init()
-        points, s2p, self._ideal_phase = args
+
+        points = int(args[0])
+        s2p = list(args[1])
+        self._ideal_phase = list(args[2])
+
+        if self.adjust:
+            self._load_ideal()
+            return
 
         for pars in s2p:
             for i in range(9):
