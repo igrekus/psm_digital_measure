@@ -84,7 +84,7 @@ class PrimaryPlotWidget(QWidget):
         self._grid.addWidget(self._plotS21PhaseRmse, 0, 2)
         self._grid.addWidget(self._plotS21Err, 1, 2)
         self._grid.addWidget(self._plotS21Rmse, 0, 3)
-        self._grid.addWidget(self._plotMisc, 1, 3)
+        # self._grid.addWidget(self._plotMisc, 1, 3)
 
         self.setLayout(self._grid)
 
@@ -120,7 +120,7 @@ class PrimaryPlotWidget(QWidget):
         self._plotS21PhaseRmse.clear()
         self._plotS21Err.clear()
         self._plotS21Rmse.clear()
-        self._plotMisc.clear()
+        # self._plotMisc.clear()
 
     def plot(self, dev_id=0):
         print('plotting primary stats')
@@ -160,8 +160,8 @@ class PrimaryPlotWidget(QWidget):
         for xs, ys in zip([freqs], [s21_rmse]):
             self._plotS21Rmse.plot(xs, ys)
 
-        for xs, ys in zip([freqs] * len(misc), misc):
-            self._plotMisc.plot(xs, ys)
+        # for xs, ys in zip([freqs] * len(misc), misc):
+        #     self._plotMisc.plot(xs, ys)
 
     def save(self, img_path='./image'):
         try:
