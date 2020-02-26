@@ -130,7 +130,7 @@ class InstrumentController(QObject):
         pna.send('CALC1:PAR:DEF "CH1_S21",S21')
 
         # c:\program files\agilent\newtowrk analyzer\UserCalSets
-        pna.send('SENS1:CORR:CSET:ACT "Upr_tst",1')
+        pna.send(f'SENS1:CORR:CSET:ACT "{self.cal_set}",1')
         # pna.send('SENS2:CORR:CSET:ACT "-20dBm_1.1-1.4G",1')
 
         pna.send(f'SENS1:SWE:POIN {self.sweep_points}')
