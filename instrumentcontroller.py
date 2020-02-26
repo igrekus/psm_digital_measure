@@ -102,8 +102,7 @@ class InstrumentController(QObject):
     def measure(self, params):
         print(f'call measure with {params}')
         device, secondary = params
-        res = self._measure(device, secondary)
-        self.result.raw_data = self.sweep_points, res, self._phase_values
+        self.result.raw_data = self.sweep_points, self._measure(device, secondary), self._phase_values
         self.hasResult = bool(self.result)
 
     def _measure(self, device, secondary):
