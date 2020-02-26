@@ -53,8 +53,8 @@ class InstrumentController(QObject):
             'State': 0
         }
 
-        self.span = 0.1
-        self.sweep_points = 51
+        self.sweep_points = 201
+        self.cal_set = 'Upr_tst'
 
         self._instruments = dict()
         self.found = False
