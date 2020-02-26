@@ -2,6 +2,7 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtCore import Qt, pyqtSignal, pyqtSlot, QModelIndex
 
+from formlayout.formlayout import fedit
 from instrumentcontroller import InstrumentController
 from connectionwidget import ConnectionWidget
 from measuremodel import MeasureModel
@@ -86,3 +87,23 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def on_measureStarted(self):
         self._plotWidget.clear()
+
+    @pyqtSlot()
+    def on_actParams_triggered(self):
+        only_main_states = False
+        data = [
+            ('Корректировка', self._instrumentController.result.adjust),
+            ('Калибровка', self._instrumentController.cal_set),
+            ('Только основные', only_main_states),
+        ]
+
+        values = fedit(data=data, title='Параметры')
+        if not values:
+            return
+
+        adjust, cal_set, only_main_states = values
+
+        self._instrumentController.result.adjust = adjust
+        self._instrumentController.cal_set = cal_set
+        self._plotWidget.only_main_states = only_main_states
+

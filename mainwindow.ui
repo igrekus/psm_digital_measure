@@ -59,7 +59,14 @@
     </property>
     <addaction name="actExit"/>
    </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>Настройки</string>
+    </property>
+    <addaction name="actParams"/>
+   </widget>
    <addaction name="menu"/>
+   <addaction name="menu_2"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actExit">
@@ -71,6 +78,11 @@
    </property>
    <property name="statusTip">
     <string>Выйти из приложения</string>
+   </property>
+  </action>
+  <action name="actParams">
+   <property name="text">
+    <string>Параметры...</string>
    </property>
   </action>
  </widget>

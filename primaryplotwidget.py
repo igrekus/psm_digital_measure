@@ -65,6 +65,7 @@ class PrimaryPlotWidget(QWidget):
         super().__init__(parent)
 
         self._result = result
+        self.only_main_states = False
 
         self._grid = QGridLayout()
 
