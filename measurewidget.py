@@ -153,13 +153,13 @@ class MeasureWidgetWithSecondaryParameters(MeasureWidget):
         self._spinFreqEnd.setSuffix(' ГГц')
         self._devices._layout.addRow('F2=', self._spinFreqEnd)
 
-        self._spinState = QSpinBox(parent=self)
-        self._spinState.setMinimum(0)
-        self._spinState.setMaximum(63)
+        self._spinState = QDoubleSpinBox(parent=self)
+        self._spinState.setMinimum(-100)
+        self._spinState.setMaximum(100)
         self._spinState.setSingleStep(1)
-        self._spinState.setValue(0)
-        self._spinState.setSuffix(' ГГц')
-        self._devices._layout.addRow('Состояние=', self._spinState)
+        self._spinState.setValue(-9)
+        self._spinState.setSuffix(' dB')
+        self._devices._layout.addRow('Kп=', self._spinState)
 
         self._connectSignals()
 
@@ -209,6 +209,6 @@ class MeasureWidgetWithSecondaryParameters(MeasureWidget):
             'Pin': self._spinPowIn.value(),
             'F1': self._spinFreqStart.value(),
             'F2': self._spinFreqEnd.value(),
-            'State': self._spinState.value()
+            'kp': self._spinState.value()
         }
         self.secondaryChanged.emit(params)

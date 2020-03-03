@@ -65,6 +65,7 @@ class MeasureResult:
 
     def __init__(self, ):
         self.headers = list()
+        self._secondary_params = dict()
         self._freqs = list()
         self._s21s = list()
         self._s21s_err = list()
@@ -89,6 +90,9 @@ class MeasureResult:
 
         self._misc = list()
 
+        self._kp_freq_min = 0
+        self._kp_freq_max = 0
+
         self.adjust = False
         self.ready = False
 
@@ -96,6 +100,7 @@ class MeasureResult:
         return self.ready
 
     def _init(self):
+        self._secondary_params.clear()
         self._freqs.clear()
         self._s21s.clear()
         self._s21s_err.clear()
@@ -118,6 +123,9 @@ class MeasureResult:
         self._phase_err_max.clear()
         self._s21_err_max.clear()
 
+        self._kp_freq_min = 0
+        self._kp_freq_max = 0
+
         self._misc.clear()
 
     def _process(self):
@@ -134,6 +142,9 @@ class MeasureResult:
         self._calc_phase_rmse()
         self._calc_s21_rmse()
         self._calc_stats()
+
+        self._cal_s21_worst_loss()
+
         self.ready = True
 
     def _calc_vwsr_in(self):
@@ -202,6 +213,25 @@ class MeasureResult:
         vs = list(zip(*self.s21_err))
         self._s21_err_max = [max(abs(v) for v in vs[0]), max(abs(v) for v in vs[mid]), max(abs(v) for v in vs[-1])]
 
+    def _cal_s21_worst_loss(self):
+        level = self._secondary_params['kp']
+        mins = [min(vals) for vals in zip(*self._s21s)]
+        res = itertools.groupby(mins, key=lambda x: x > level)
+        res = [list(ls) for val, ls in res if val]
+        max_size = max(len(el) for el in res)
+        res = list(filter(lambda x: len(x) == max_size, res))[0]
+
+        min_index = 0
+        max_index = 0
+        try:
+            min_index = mins.index(res[0])
+            max_index = mins.index(res[-1])
+        except ValueError:
+            pass
+
+        self._kp_freq_min = self._freqs[min_index] if min_index else 'n/a'
+        self._kp_freq_max = self._freqs[max_index] if max_index else 'n/a'
+
     def _load_ideal(self):
         for i in range(64):
             with open(f'data\\s{i}.s2p', mode='rt', encoding='utf-8') as f:
@@ -248,6 +278,7 @@ class MeasureResult:
         points = int(args[0])
         s2p = list(args[1])
         self._ideal_phase = list(args[2])
+        self._secondary_params = dict(args[3])
 
         if self.adjust:
             self._load_ideal()
@@ -350,5 +381,9 @@ class MeasureResult:
 {self._s21_rmse_values[1]:.02f} дБ на {f2} ГГц
 {self._s21_rmse_values[2]:.02f} дБ на {f3} ГГц
 
-'''
+Нижняя граница РЧ, Fн:
+{self._kp_freq_min / 1_000_000_000:.02f} ГГц
 
+Верхняя граница РЧ, Fв:
+{self._kp_freq_max / 1_000_000_000:.02f} ГГц
+'''

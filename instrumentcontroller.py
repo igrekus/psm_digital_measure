@@ -50,7 +50,7 @@ class InstrumentController(QObject):
             'Pin': -10,
             'F1': 4,
             'F2': 8,
-            'State': 0
+            'kp': 0
         }
 
         self.sweep_points = 201
@@ -102,7 +102,7 @@ class InstrumentController(QObject):
     def measure(self, params):
         print(f'call measure with {params}')
         device, secondary = params
-        self.result.raw_data = self.sweep_points, self._measure(device, secondary), self._phase_values
+        self.result.raw_data = self.sweep_points, self._measure(device, secondary), self._phase_values, self.secondaryParams
         self.hasResult = bool(self.result)
 
     def _measure(self, device, secondary):
