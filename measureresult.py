@@ -4,7 +4,6 @@ import random
 import statistics
 
 
-# TODO calc mean from F-err
 # TODO plot only main states
 
 def unwrap(xw):
