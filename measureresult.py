@@ -214,23 +214,23 @@ class MeasureResult:
         self._s21_err_max = [max(abs(v) for v in vs[0]), max(abs(v) for v in vs[mid]), max(abs(v) for v in vs[-1])]
 
     def _cal_s21_worst_loss(self):
-        level = self._secondary_params['kp']
+        min_index = 0
+        max_index = len(self._freqs) - 1
+        level = self._secondaryParams['kp']
         mins = [min(vals) for vals in zip(*self._s21s)]
         res = itertools.groupby(mins, key=lambda x: x > level)
         res = [list(ls) for val, ls in res if val]
-        max_size = max(len(el) for el in res)
-        res = list(filter(lambda x: len(x) == max_size, res))[0]
-
-        min_index = 0
-        max_index = 0
-        try:
+        if not res:
+            self._kp_freq_min = 'n/a'
+            self._kp_freq_max = 'n/a'
+            return
+        elif len(res) != len(self._freqs):
+            max_size = max(len(el) for el in res)
+            res = list(filter(lambda x: len(x) == max_size, res))[0]
             min_index = mins.index(res[0])
             max_index = mins.index(res[-1])
-        except ValueError:
-            pass
-
-        self._kp_freq_min = self._freqs[min_index] if min_index else 'n/a'
-        self._kp_freq_max = self._freqs[max_index] if max_index else 'n/a'
+        self._kp_freq_min = round(self._freqs[min_index] / 1_000_000_000, 2)
+        self._kp_freq_max = round(self._freqs[max_index] / 1_000_000_000, 2)
 
     def _load_ideal(self):
         for i in range(64):
