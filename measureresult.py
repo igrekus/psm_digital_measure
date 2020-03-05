@@ -61,10 +61,14 @@ def generateValue(data):
 
 
 class MeasureResult:
-
+    adjust_dirs = {
+        1: 'data/+20',
+        2: 'data/+125',
+        3: 'data/-60',
+    }
     def __init__(self, ):
         self.headers = list()
-        self._secondary_params = dict()
+        self._secondaryParams = dict()
         self._freqs = list()
         self._s21s = list()
         self._s21s_err = list()
@@ -93,13 +97,14 @@ class MeasureResult:
         self._kp_freq_max = 0
 
         self.adjust = False
+        self._adjust_dir = self.adjust_dirs[1]
         self.ready = False
 
     def __bool__(self):
         return self.ready
 
     def _init(self):
-        self._secondary_params.clear()
+        self._secondaryParams.clear()
         self._freqs.clear()
         self._s21s.clear()
         self._s21s_err.clear()
@@ -232,8 +237,9 @@ class MeasureResult:
         self._kp_freq_max = round(self._freqs[max_index] / 1_000_000_000, 2)
 
     def _load_ideal(self):
+        print(f'reading adjust set from: {self.adjust_set}/')
         for i in range(64):
-            with open(f'data\\s{i}.s2p', mode='rt', encoding='utf-8') as f:
+            with open(f'{self.adjust_set}/s{i}.s2p', mode='rt', encoding='utf-8') as f:
                 fs = []
                 s11dbs = []
                 s11degs = []
@@ -277,7 +283,7 @@ class MeasureResult:
         points = int(args[0])
         s2p = list(args[1])
         self._ideal_phase = list(args[2])
-        self._secondary_params = dict(args[3])
+        self._secondaryParams = dict(args[3])
 
         if self.adjust:
             self._load_ideal()
@@ -337,6 +343,14 @@ class MeasureResult:
     @property
     def misc(self):
         return self._misc
+
+    @property
+    def adjust_set(self):
+        return self._adjust_dir
+
+    @adjust_set.setter
+    def adjust_set(self, value):
+        self._adjust_dir = self.adjust_dirs[value]
 
     @property
     def stats(self):
