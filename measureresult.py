@@ -395,8 +395,8 @@ class MeasureResult:
 {self._s21_rmse_values[2]:.02f} дБ на {f3} ГГц
 
 Нижняя граница РЧ, Fн:
-{self._kp_freq_min / 1_000_000_000:.02f} ГГц
+{self._kp_freq_min:.02f} ГГц
 
 Верхняя граница РЧ, Fв:
-{self._kp_freq_max / 1_000_000_000:.02f} ГГц
+{self._kp_freq_max:.02f} ГГц
 '''
