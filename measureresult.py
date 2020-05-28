@@ -5,6 +5,7 @@ import statistics
 
 
 # TODO plot only main states
+# TODO add freq cutoff interval
 
 def unwrap(xw):
     dist = 180
