@@ -68,8 +68,10 @@ class MeasureResult:
         3: 'data/-60',
     }
     def __init__(self, ):
+
         self.headers = list()
         self._secondaryParams = dict()
+
         self._freqs = list()
         self._s21s = list()
         self._s21s_err = list()
