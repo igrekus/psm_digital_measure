@@ -160,6 +160,22 @@ class MeasureWidgetWithSecondaryParameters(MeasureWidget):
         self._spinState.setSuffix(' dB')
         self._devices._layout.addRow('Kп=', self._spinState)
 
+        self._spinFreq1 = QDoubleSpinBox(parent=self)
+        self._spinFreq1.setMinimum(0)
+        self._spinFreq1.setMaximum(20)
+        self._spinFreq1.setSingleStep(1)
+        self._spinFreq1.setValue(self._spinFreqStart.value())
+        self._spinFreq1.setSuffix(' ГГц')
+        self._devices._layout.addRow('Fгр1=', self._spinFreq1)
+
+        self._spinFreq2 = QDoubleSpinBox(parent=self)
+        self._spinFreq2.setMinimum(0)
+        self._spinFreq2.setMaximum(20)
+        self._spinFreq2.setSingleStep(1)
+        self._spinFreq2.setValue(self._spinFreqEnd.value())
+        self._spinFreq2.setSuffix(' ГГц')
+        self._devices._layout.addRow('Fгр1=', self._spinFreq2)
+
         self._connectSignals()
 
     def _connectSignals(self):
@@ -168,6 +184,8 @@ class MeasureWidgetWithSecondaryParameters(MeasureWidget):
         self._spinFreqStart.valueChanged.connect(self.on_params_changed)
         self._spinFreqEnd.valueChanged.connect(self.on_params_changed)
         self._spinState.valueChanged.connect(self.on_params_changed)
+        self._spinFreq1.valueChanged.connect(self.on_params_changed)
+        self._spinFreq2.valueChanged.connect(self.on_params_changed)
 
     def _modePreConnect(self):
         super()._modePreConnect()
@@ -208,6 +226,8 @@ class MeasureWidgetWithSecondaryParameters(MeasureWidget):
             'Pin': self._spinPowIn.value(),
             'F1': self._spinFreqStart.value(),
             'F2': self._spinFreqEnd.value(),
-            'kp': self._spinState.value()
+            'kp': self._spinState.value(),
+            'Fborder1': self._spinFreq1.value(),
+            'Fborder2': self._spinFreq2.value(),
         }
         self.secondaryChanged.emit(params)

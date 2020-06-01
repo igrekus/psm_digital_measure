@@ -50,7 +50,9 @@ class InstrumentController(QObject):
             'Pin': -10,
             'F1': 4,
             'F2': 8,
-            'kp': 0
+            'kp': 0,
+            'Fborder1': 4,
+            'Fborder2': 8
         }
 
         self.sweep_points = 201
