@@ -61,12 +61,17 @@ def generateValue(data):
     return round(random.randint(0, int((stop - start) / step)) * step + start, 2)
 
 
+def _find_freq_index(freqs: list, freq):
+    return min(range(len(freqs)), key=lambda i: abs(freqs[i] - freq))
+
+
 class MeasureResult:
     adjust_dirs = {
         1: 'data/+25',
         2: 'data/+85',
         3: 'data/-60',
     }
+
     def __init__(self, ):
 
         self.headers = list()
@@ -98,6 +103,9 @@ class MeasureResult:
 
         self._kp_freq_min = 0
         self._kp_freq_max = 0
+
+        self._min_freq_index = 0
+        self._max_freq_index = 0
 
         self.adjust = False
         self._adjust_dir = self.adjust_dirs[1]
@@ -200,29 +208,36 @@ class MeasureResult:
             return
 
     def _calc_stats(self):
-        mid = len(self._freqs) // 2
+        self._min_freq_index = _find_freq_index(self._freqs, self._secondaryParams['Fborder1'])
+        self._max_freq_index = _find_freq_index(self._freqs, self._secondaryParams['Fborder2'])
+
+        mid = abs(self._max_freq_index - self._min_freq_index) // 2
 
         vs = list(zip(*self.s21))
-        self._s21_mins = [min(vs[0]), min(vs[mid]), min(vs[-1])]
+        self._s21_mins = [min(vs[self._min_freq_index]), min(vs[mid]), min(vs[self._max_freq_index])]
 
         vs = list(zip(*self.vswr_in))
-        self._vswr_in_max = [max(vs[0]), max(vs[mid]), max(vs[-1])]
+        self._vswr_in_max = [max(vs[self._min_freq_index]), max(vs[mid]), max(vs[self._max_freq_index])]
 
         vs = list(zip(*self.vswr_out))
-        self._vswr_out_max = [max(vs[0]), max(vs[mid]), max(vs[-1])]
+        self._vswr_out_max = [max(vs[self._min_freq_index]), max(vs[mid]), max(vs[self._max_freq_index])]
 
-        self._phase_rmse_values = [self.phase_rmse[0], self.phase_rmse[mid], self.phase_rmse[-1]]
-        self._s21_rmse_values = [self.s21_rmse[0], self.s21_rmse[mid], self.s21_rmse[-1]]
+        self._phase_rmse_values = [self.phase_rmse[self._min_freq_index], self.phase_rmse[mid], self.phase_rmse[self._max_freq_index]]
+        self._s21_rmse_values = [self.s21_rmse[self._min_freq_index], self.s21_rmse[mid], self.s21_rmse[self._max_freq_index]]
 
         vs = list(zip(*self.phase_err))
-        self._phase_err_max = [max(abs(v) for v in vs[0]), max(abs(v) for v in vs[mid]), max(abs(v) for v in vs[-1])]
+        self._phase_err_max = [max(abs(v) for v in vs[self._min_freq_index]), max(abs(v) for v in vs[mid]), max(abs(v) for v in vs[self._max_freq_index])]
 
         vs = list(zip(*self.s21_err))
-        self._s21_err_max = [max(abs(v) for v in vs[0]), max(abs(v) for v in vs[mid]), max(abs(v) for v in vs[-1])]
+        self._s21_err_max = [max(abs(v) for v in vs[self._min_freq_index]), max(abs(v) for v in vs[mid]), max(abs(v) for v in vs[self._max_freq_index])]
 
     def _cal_s21_worst_loss(self):
-        min_index = 0
-        max_index = len(self._freqs) - 1
+        min_index = _find_freq_index(self._freqs, self._secondaryParams['Fborder1'])
+        max_index = _find_freq_index(self._freqs, self._secondaryParams['Fborder2'])
+
+        # min_index = 0
+        # max_index = len(self._freqs) - 1
+
         level = self._secondaryParams['kp']
         mins = [min(vals) for vals in zip(*self._s21s)]
         res = itertools.groupby(mins, key=lambda x: x > level)
