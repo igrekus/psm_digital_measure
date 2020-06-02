@@ -174,7 +174,7 @@ class MeasureWidgetWithSecondaryParameters(MeasureWidget):
         self._spinFreq2.setSingleStep(1)
         self._spinFreq2.setValue(self._spinFreqEnd.value())
         self._spinFreq2.setSuffix(' ГГц')
-        self._devices._layout.addRow('Fгр1=', self._spinFreq2)
+        self._devices._layout.addRow('Fгр2=', self._spinFreq2)
 
         self._connectSignals()
 
