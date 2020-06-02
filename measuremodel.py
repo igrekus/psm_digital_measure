@@ -23,7 +23,7 @@ class MeasureModel(QAbstractTableModel):
     def update(self):
         self._init()
         self.beginResetModel()
-        self._data = self._controller.result.data
+        # self._data = self._controller.result.data
         self.endResetModel()
 
     def headerData(self, section, orientation, role=None):
