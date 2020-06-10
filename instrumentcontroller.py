@@ -1,4 +1,3 @@
-import datetime
 import time
 
 from os.path import isfile
