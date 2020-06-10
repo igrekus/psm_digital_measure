@@ -28,7 +28,7 @@ class InstrumentController(QObject):
         super().__init__(parent=parent)
 
         self.requiredInstruments = {
-            'Анализатор': NetworkAnalyzerFactory('GPIB1::9::INSTR'),
+            'Анализатор': NetworkAnalyzerFactory('GPIB0::9::INSTR'),
             'Программатор': ProgrammerFactory('COM5')
         }
 
