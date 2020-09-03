@@ -90,11 +90,10 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def on_actParams_triggered(self):
-        only_main_states = False
         data = [
             ('Корректировка', self._instrumentController.result.adjust),
             ('Калибровка', self._instrumentController.cal_set),
-            ('Только основные', only_main_states),
+            ('Только основные', self._plotWidget.only_main_states),
             ('Набор для коррекции', [1, '+25', '+85', '-60']),
         ]
 
@@ -107,5 +106,7 @@ class MainWindow(QMainWindow):
         self._instrumentController.result.adjust = adjust
         self._instrumentController.result.adjust_set = adjust_set
         self._instrumentController.cal_set = cal_set
+        self._instrumentController.only_main_states = only_main_states
+        self._instrumentController.result.only_main_states = only_main_states
         self._plotWidget.only_main_states = only_main_states
 

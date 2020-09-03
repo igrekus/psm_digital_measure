@@ -70,6 +70,8 @@ class MeasureResult:
         3: 'data/-60',
     }
 
+    main_states = [0, 1, 2, 4, 8, 16, 32, 63]
+
     def __init__(self, ):
 
         self.headers = list()
@@ -106,6 +108,7 @@ class MeasureResult:
         self._max_freq_index = 0
 
         self.adjust = False
+        self.only_main_states = False
         self._adjust_dir = self.adjust_dirs[1]
         self.ready = False
 
@@ -255,6 +258,8 @@ class MeasureResult:
     def _load_ideal(self):
         print(f'reading adjust set from: {self.adjust_set}/')
         for i in range(64):
+            if self.only_main_states and i not in self.main_states:
+                continue
             with open(f'{self.adjust_set}/s{i}.s2p', mode='rt', encoding='utf-8') as f:
                 fs = []
                 s11dbs = []

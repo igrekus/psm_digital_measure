@@ -7,7 +7,7 @@ from mytools.plotwidget import PlotWidget
 
 
 class PrimaryPlotWidget(QWidget):
-    main_states = [0, 1, 2, 4, 8, 16, 32, 62, 63]
+    main_states = [0, 1, 2, 4, 8, 16, 32, 63]
 
     params = {
         0: {
@@ -130,16 +130,23 @@ class PrimaryPlotWidget(QWidget):
         self._init(dev_id)
 
         for_states = self.main_states if self.only_main_states else range(64)
+        # for_states = range(len(self.main_states))
 
         freqs = self._result.freqs
-        s21s = [self._result.s21[i] for i in for_states]
-        vswr_in = [self._result.vswr_in[i] for i in for_states]
-        vswr_out = [self._result.vswr_out[i] for i in for_states]
-        phase_errs = [self._result.phase_err[i - 1] for i in list(for_states)[1:]]
-        s21_err = [self._result.s21_err[i - 1] for i in list(for_states)[1:]]
+        # s21s = [self._result.s21[i] for i in for_states]
+        # vswr_in = [self._result.vswr_in[i] for i in for_states]
+        # vswr_out = [self._result.vswr_out[i] for i in for_states]
+        # phase_errs = [self._result.phase_err[i - 1] for i in list(for_states)[1:]]
+        # s21_err = [self._result.s21_err[i - 1] for i in list(for_states)[1:]]
+        # phase_rmse = self._result.phase_rmse
+        # s21_rmse = self._result.s21_rmse
+        s21s = self._result.s21
+        vswr_in = self._result.vswr_in
+        vswr_out = self._result.vswr_out
+        phase_errs = self._result.phase_err
+        s21_err = self._result.s21_err
         phase_rmse = self._result.phase_rmse
         s21_rmse = self._result.s21_rmse
-        misc = self._result.misc
 
         n = len(s21s)
 

@@ -23,6 +23,8 @@ class InstrumentController(QObject):
         i * 5.625: i for i in range(64)
     }
 
+    main_states = [0, 1, 2, 4, 8, 16, 32, 63]
+
     def __init__(self, parent=None):
         super().__init__(parent=parent)
 
@@ -64,6 +66,7 @@ class InstrumentController(QObject):
         self.found = False
         self.present = False
         self.hasResult = False
+        self.only_main_states = False
 
         self.result = MeasureResult()
 
@@ -152,7 +155,7 @@ class InstrumentController(QObject):
 
         out = []
         for deg, code in self.states.items():
-            if code not in [0, 1, 2, 4, 8, 16, 32, 63]:
+            if self.only_main_states and code not in self.main_states:
                 continue
             self._phase_values.append(deg)
 
